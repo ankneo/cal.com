@@ -113,14 +113,16 @@ const SlotPicker = ({
   users,
   seatsPerTimeSlot,
   weekStart = 0,
+  profile,
 }: {
-  eventType: Pick<EventType, "id" | "schedulingType" | "slug">;
+  eventType: Pick<EventType, "id" | "schedulingType" | "slug" | "length" | "locations">;
   timeFormat: string;
   timeZone?: string;
   seatsPerTimeSlot?: number;
   recurringEventCount?: number;
   users: string[];
   weekStart?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  profile: { slug: string | null; eventName?: string | null };
 }) => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>();
   const [browsingDate, setBrowsingDate] = useState<Dayjs>();
@@ -202,6 +204,9 @@ const SlotPicker = ({
           eventTypeSlug={eventType.slug}
           seatsPerTimeSlot={seatsPerTimeSlot}
           recurringCount={recurringEventCount}
+          profile={profile}
+          eventTypeLength={eventType.length}
+          eventTypeLocations={eventType.locations}
         />
       )}
     </>
@@ -587,6 +592,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
                 users={userList}
                 seatsPerTimeSlot={eventType.seatsPerTimeSlot || undefined}
                 recurringEventCount={recurringEventCount}
+                profile={profile}
               />
             </div>
           </div>

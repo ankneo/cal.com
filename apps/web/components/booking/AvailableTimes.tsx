@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
+import { useMutation } from "react-query";
 
+import { getEventLocationValue } from "@calcom/app-store/locations";
+import { LocationObject } from "@calcom/core/location";
 import dayjs, { Dayjs } from "@calcom/dayjs";
+import { sdkActionManager } from "@calcom/embed-core/embed-iframe";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import { nameOfDay } from "@calcom/lib/weekday";
 import type { Slot } from "@calcom/trpc/server/routers/viewer/slots";
@@ -10,6 +14,7 @@ import { SkeletonContainer, SkeletonText } from "@calcom/ui";
 
 import classNames from "@lib/classNames";
 import { timeZone } from "@lib/clock";
+import createBooking from "@lib/mutations/bookings/create-booking";
 
 type AvailableTimesProps = {
   timeFormat: string;
@@ -20,6 +25,9 @@ type AvailableTimesProps = {
   seatsPerTimeSlot?: number | null;
   slots?: Slot[];
   isLoading: boolean;
+  profile: { slug: string | null; eventName?: string | null };
+  eventTypeLength: number;
+  eventTypeLocations: LocationObject[];
 };
 
 const AvailableTimes: FC<AvailableTimesProps> = ({
@@ -31,12 +39,98 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
   recurringCount,
   timeFormat,
   seatsPerTimeSlot,
+  profile,
+  eventTypeLength,
+  eventTypeLocations,
 }) => {
   const { t, i18n } = useLocale();
   const router = useRouter();
   const { rescheduleUid } = router.query;
 
   const [brand, setBrand] = useState("#292929");
+  const [selectedTime, setSelectedTime] = useState<string>();
+
+  const locations: LocationObject[] = useMemo(
+    () => (eventTypeLocations as LocationObject[]) || [],
+    [eventTypeLocations]
+  );
+
+  const mutation = useMutation(createBooking, {
+    onSuccess: async (responseData) => {
+      const { id, attendees, startTime, endTime, title } = responseData;
+      if (sdkActionManager) {
+        sdkActionManager.fire("bookingSuccess", {
+          startTime,
+          endTime,
+          title,
+          type: eventTypeId,
+          eventSlug: eventTypeSlug,
+          user: profile.slug,
+          reschedule: !!rescheduleUid,
+          name: attendees[0].name,
+          email: attendees[0].email,
+          location: responseData.location,
+          eventName: profile.eventName || "",
+          bookingId: id,
+          isSuccessBookingPage: true,
+        });
+      }
+      return true;
+    },
+    onError: async (error) => {
+      if (sdkActionManager) {
+        sdkActionManager.fire("bookingError", {
+          error: JSON.stringify(error),
+          isSuccessBookingPage: false,
+        });
+      }
+    },
+  });
+
+  if (window.isEmbed()) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.eventAttached ||
+      window.addEventListener("message", (e) => {
+        const data: Record<string, any> = e.data;
+        if (!data) {
+          return;
+        }
+        if (data.originator === "VWO") {
+          bookMeeting(data.slot);
+        }
+      });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.eventAttached = true;
+
+    const bookMeeting = (slot: {
+      time: string | number | dayjs.Dayjs | Date | null | undefined;
+      bookingUid: string;
+    }) => {
+      mutation.mutate({
+        start: dayjs(slot.time).format(),
+        end: dayjs(slot.time).add(eventTypeLength, "minute").format(),
+        eventTypeId,
+        eventTypeSlug,
+        timeZone: timeZone(),
+        language: i18n.language,
+        rescheduleUid: rescheduleUid as string,
+        bookingUid: slot.bookingUid,
+        user: router.query.user,
+        metadata: {},
+        hasHashedBookingLink: false,
+        hashedLink: "",
+        email: router.query.email as string,
+        name: router.query.name as string,
+        customInputs: [],
+        location: getEventLocationValue(locations, {
+          type: eventTypeLocations ? eventTypeLocations[0]?.type : "",
+        }),
+      });
+    };
+  }
 
   useEffect(() => {
     setBrand(getComputedStyle(document.documentElement).getPropertyValue("--brand-color").trim());
@@ -81,6 +175,20 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
               bookingUrl.query.bookingUid = slot.bookingUid;
             }
 
+            const handleClick = (e) => {
+              if (window.isEmbed()) {
+                setSelectedTime(slot.time);
+                e.preventDefault();
+                if (sdkActionManager) {
+                  sdkActionManager.fire("dateSelected", {
+                    slot: slot,
+                  });
+                }
+              } else {
+                return true;
+              }
+            };
+
             return (
               <div key={dayjs(slot.time).format()}>
                 {/* Current there is no way to disable Next.js Links */}
@@ -97,11 +205,14 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
                   <Link href={bookingUrl} prefetch={false}>
                     <a
                       className={classNames(
-                        "text-primary-500 hover:border-gray-900 hover:bg-gray-50",
-                        "dark:bg-darkgray-200 dark:hover:bg-darkgray-300 dark:hover:border-darkmodebrand mb-2 block rounded-md border bg-white py-2 text-sm font-medium dark:border-transparent dark:text-neutral-200",
-                        brand === "#fff" || brand === "#ffffff" ? "" : ""
+                        window.isEmbed() && selectedTime === slot.time
+                          ? "bg-darkgray-50 dark:bg-white"
+                          : "dark:bg-darkgray-50  dark:hover:border-darkgray-900 bg-white dark:border-transparent dark:text-neutral-200",
+                        "text-primary-500 mb-2 block rounded-md border-2 py-4 text-sm font-medium",
+                        brand === "#fff" || brand === "#ffffff" ? "border-brandcontrast" : "border-brand"
                       )}
-                      data-testid="time">
+                      data-testid="time"
+                      onClick={handleClick}>
                       {dayjs(slot.time).tz(timeZone()).format(timeFormat)}
                       {!!seatsPerTimeSlot && (
                         <p

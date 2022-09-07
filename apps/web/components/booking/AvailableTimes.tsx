@@ -208,10 +208,11 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
                   <Link href={bookingUrl} prefetch={false}>
                     <a
                       className={classNames(
+                        "text-primary-500 hover:border-gray-900 hover:bg-gray-50",
                         window.isEmbed() && selectedTime === slot.time
-                          ? "bg-darkgray-50 dark:bg-white"
-                          : "dark:bg-darkgray-50  dark:hover:border-darkgray-900 bg-white dark:border-transparent dark:text-neutral-200",
-                        "text-primary-500 mb-2 block rounded-md border-2 py-4 text-sm font-medium",
+                          ? "bg-darkgray-200 hover:bg-darkgray-300 hover:border-darkmodebrand dark:text-primary-500 border-transparent text-neutral-200 dark:bg-white"
+                          : "dark:bg-darkgray-200 dark:hover:border-darkgray-300 dark:hover:border-darkmodebrand bg-white dark:border-transparent dark:text-neutral-200",
+                        "mb-2 block rounded-md border py-2 text-sm font-medium",
                         brand === "#fff" || brand === "#ffffff" ? "border-brandcontrast" : "border-brand"
                       )}
                       data-testid="time"

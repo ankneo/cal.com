@@ -4,7 +4,8 @@ import { SchedulingType } from "@prisma/client";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { TFunction } from "next-i18next";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useReducer, useEffect, useMemo, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { FormattedNumber, IntlProvider } from "react-intl";
 import { z } from "zod";
 
@@ -34,6 +35,7 @@ import { timeZone as localStorageTimeZone } from "@lib/clock";
 import { useExposePlanGlobally } from "@lib/hooks/useExposePlanGlobally";
 import { isBrandingHidden } from "@lib/isBrandingHidden";
 
+import Gates, { Gate, GateState } from "@components/Gates";
 import AvailableTimes from "@components/booking/AvailableTimes";
 import TimeOptions from "@components/booking/TimeOptions";
 import { UserAvatars } from "@components/booking/UserAvatars";
@@ -45,8 +47,6 @@ import type { AvailabilityPageProps } from "../../../pages/[user]/[type]";
 import type { DynamicAvailabilityPageProps } from "../../../pages/d/[link]/[slug]";
 import type { AvailabilityTeamPageProps } from "../../../pages/team/[slug]/[type]";
 import { AvailableEventLocations } from "../AvailableEventLocations";
-
-export type Props = AvailabilityTeamPageProps | AvailabilityPageProps | DynamicAvailabilityPageProps;
 
 const GoBackToPreviousPage = ({ t }: { t: TFunction }) => {
   const router = useRouter();
@@ -114,6 +114,7 @@ const SlotPicker = ({
   seatsPerTimeSlot,
   weekStart = 0,
   profile,
+  ethSignature,
 }: {
   eventType: Pick<EventType, "id" | "schedulingType" | "slug" | "length" | "locations">;
   timeFormat: string;
@@ -123,6 +124,7 @@ const SlotPicker = ({
   users: string[];
   weekStart?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   profile: { slug: string | null; eventName?: string | null };
+  ethSignature?: string;
 }) => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>();
   const [browsingDate, setBrowsingDate] = useState<Dayjs>();
@@ -207,6 +209,7 @@ const SlotPicker = ({
           profile={profile}
           eventTypeLength={eventType.length}
           eventTypeLocations={eventType.locations}
+          ethSignature={ethSignature}
         />
       )}
     </>
@@ -289,6 +292,8 @@ const useRouterQuery = <T extends string>(name: T) => {
   } & { setQuery: typeof setQuery };
 };
 
+export type Props = AvailabilityTeamPageProps | AvailabilityPageProps | DynamicAvailabilityPageProps;
+
 const AvailabilityPage = ({ profile, eventType }: Props) => {
   const router = useRouter();
   const isEmbed = useIsEmbed();
@@ -304,6 +309,13 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   const [timeZone, setTimeZone] = useState<string>();
   const [timeFormat, setTimeFormat] = useState(detectBrowserTimeFormat);
   const [isAvailableTimesVisible, setIsAvailableTimesVisible] = useState<boolean>();
+  const [gateState, gateDispatcher] = useReducer(
+    (state: GateState, newState: Partial<GateState>) => ({
+      ...state,
+      ...newState,
+    }),
+    {}
+  );
 
   useEffect(() => {
     setTimeZone(localStorageTimeZone() || dayjs.tz.guess());
@@ -330,7 +342,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   }, [telemetry]);
 
   // get dynamic user list here
-  const userList = eventType.users.map((user) => user.username).filter(notEmpty);
+  const userList = eventType.users ? eventType.users.map((user) => user.username).filter(notEmpty) : [];
   // Recurring event sidebar requires more space
   const maxWidth = isAvailableTimesVisible
     ? recurringEventCount
@@ -354,8 +366,16 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   if (rawSlug.length > 1) rawSlug.pop(); //team events have team name as slug, but user events have [user]/[type] as slug.
   const slug = rawSlug.join("/");
 
+  // Define conditional gates here
+  const gates = [
+    // Rainbow gate is only added if the event has both a `blockchainId` and a `smartContractAddress`
+    eventType.metadata && eventType.metadata.blockchainId && eventType.metadata.smartContractAddress
+      ? ("rainbow" as Gate)
+      : undefined,
+  ];
+
   return (
-    <>
+    <Gates gates={gates} metadata={eventType.metadata} dispatch={gateDispatcher}>
       <HeadSeo
         title={`${rescheduleUid ? t("reschedule") : ""} ${eventType.title} | ${profile.name}`}
         description={`${rescheduleUid ? t("reschedule") : ""} ${eventType.title}`}
@@ -379,7 +399,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
             style={availabilityDatePickerEmbedStyles}
             className={classNames(
               isBackgroundTransparent ? "" : "dark:bg-darkgray-100 sm:dark:border-darkgray-300 bg-white",
-              "border-bookinglightest rounded-md md:border",
+              "border-bookinglightest overflow-hidden rounded-md md:border",
               isEmbed ? "mx-auto" : maxWidth
             )}>
             {/* mobile: details */}
@@ -593,13 +613,15 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
                 seatsPerTimeSlot={eventType.seatsPerTimeSlot || undefined}
                 recurringEventCount={recurringEventCount}
                 profile={profile}
+                ethSignature={gateState.rainbowToken}
               />
             </div>
           </div>
           {(!eventType.users[0] || !isBrandingHidden(eventType.users[0])) && !isEmbed && <PoweredByCal />}
         </main>
       </div>
-    </>
+      <Toaster position="bottom-right" />
+    </Gates>
   );
 };
 

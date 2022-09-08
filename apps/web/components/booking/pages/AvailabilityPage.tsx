@@ -207,8 +207,7 @@ const SlotPicker = ({
           seatsPerTimeSlot={seatsPerTimeSlot}
           recurringCount={recurringEventCount}
           profile={profile}
-          eventTypeLength={eventType.length}
-          eventTypeLocations={eventType.locations}
+          eventType={eventType}
           ethSignature={ethSignature}
         />
       )}

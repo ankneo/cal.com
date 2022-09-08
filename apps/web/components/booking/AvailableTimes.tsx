@@ -1,3 +1,4 @@
+import { EventType } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, useEffect, useMemo, useState } from "react";
@@ -26,8 +27,7 @@ type AvailableTimesProps = {
   slots?: Slot[];
   isLoading: boolean;
   profile: { slug: string | null; eventName?: string | null };
-  eventTypeLength: number;
-  eventTypeLocations: LocationObject[];
+  eventType: Pick<EventType, "length" | "locations">;
   ethSignature?: string;
 };
 
@@ -41,8 +41,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
   timeFormat,
   seatsPerTimeSlot,
   profile,
-  eventTypeLength,
-  eventTypeLocations,
+  eventType,
   ethSignature,
 }) => {
   const { t, i18n } = useLocale();
@@ -53,8 +52,8 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
   const [selectedTime, setSelectedTime] = useState<string>();
 
   const locations: LocationObject[] = useMemo(
-    () => (eventTypeLocations as LocationObject[]) || [],
-    [eventTypeLocations]
+    () => (eventType.locations as LocationObject[]) || [],
+    [eventType.locations]
   );
 
   const mutation = useMutation(createBooking, {
@@ -114,7 +113,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
     }) => {
       mutation.mutate({
         start: dayjs(slot.time).format(),
-        end: dayjs(slot.time).add(eventTypeLength, "minute").format(),
+        end: dayjs(slot.time).add(eventType.length, "minute").format(),
         eventTypeId,
         eventTypeSlug,
         timeZone: timeZone(),
@@ -129,7 +128,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
         name: router.query.name as string,
         customInputs: [],
         location: getEventLocationValue(locations, {
-          type: eventTypeLocations ? eventTypeLocations[0]?.type : "",
+          type: eventType.locations ? locations[0]?.type : "",
         }),
       });
     };
@@ -179,7 +178,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
               bookingUrl.query.bookingUid = slot.bookingUid;
             }
 
-            const handleClick = (e) => {
+            const handleClick = (e: { preventDefault: () => void }) => {
               if (window.isEmbed()) {
                 setSelectedTime(slot.time);
                 e.preventDefault();

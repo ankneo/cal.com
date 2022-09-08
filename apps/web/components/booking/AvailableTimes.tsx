@@ -59,12 +59,13 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
 
   const mutation = useMutation(createBooking, {
     onSuccess: async (responseData) => {
-      const { id, attendees, startTime, endTime, title } = responseData;
+      const { id, uid, attendees, startTime, endTime, title } = responseData;
       if (sdkActionManager) {
         sdkActionManager.fire("bookingSuccess", {
           startTime,
           endTime,
           title,
+          uid,
           type: eventTypeId,
           eventSlug: eventTypeSlug,
           user: profile.slug,

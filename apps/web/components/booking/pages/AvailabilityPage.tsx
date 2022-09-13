@@ -173,19 +173,28 @@ const SlotPicker = ({
 
   const slots = useMemo(() => ({ ..._1, ..._2 }), [_1, _2]);
 
+  const availableDate = () => {
+    const usableDates = Object.keys(slots).filter((k) => slots[k].length > 0);
+    usableDates.length > 0 &&
+      setSelectedDate(
+        timeZone === "Etc/GMT" ? dayjs.utc(usableDates[0]) : dayjs.tz(usableDates[0], timeZone)
+      );
+    return undefined;
+  };
+
   return (
     <>
       <DatePicker
         isLoading={isLoading}
         className={classNames(
-          "mt-8 w-full px-4 sm:mt-0 sm:min-w-[455px] md:px-5",
+          "mt-8 px-4 sm:mt-0 sm:min-w-[455px] md:px-5",
           selectedDate
-            ? "sm:dark:border-darkgray-200 border-gray-200 sm:w-1/2 sm:border-r sm:p-4 sm:pr-6 md:w-1/3 "
-            : "sm:p-4"
+            ? "sm:dark:border-darkgray-200 border-gray-200 sm:w-1/2 sm:border-r sm:p-4 sm:pr-6 md:w-1/2 "
+            : "sm:p-4 md:w-1/2"
         )}
         includedDates={Object.keys(slots).filter((k) => slots[k].length > 0)}
         locale={isLocaleReady ? i18n.language : "en"}
-        selected={selectedDate}
+        selected={selectedDate || availableDate()}
         onChange={(newDate) => {
           setDate(newDate.format("YYYY-MM-DD"));
         }}
@@ -345,8 +354,8 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   // Recurring event sidebar requires more space
   const maxWidth = isAvailableTimesVisible
     ? recurringEventCount
-      ? "max-w-6xl"
-      : "max-w-5xl"
+      ? "max-w-4xl"
+      : "max-w-3xl"
     : recurringEventCount
     ? "max-w-4xl"
     : "max-w-3xl";
@@ -402,7 +411,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
               isEmbed ? "mx-auto" : maxWidth
             )}>
             {/* mobile: details */}
-            <div className="block px-4 pt-4 sm:p-8 md:hidden">
+            <div className="hidden px-4 pt-4 sm:p-8 md:hidden">
               <div>
                 <UserAvatars
                   profile={profile}
@@ -503,8 +512,8 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
             <div className="overflow-hidden sm:flex">
               <div
                 className={
-                  "sm:dark:border-darkgray-200 hidden overflow-hidden border-gray-200 p-5 sm:border-r md:flex md:flex-col " +
-                  (isAvailableTimesVisible ? "sm:w-1/3" : recurringEventCount ? "sm:w-2/3" : "sm:w-1/2")
+                  "sm:dark:border-darkgray-200 hidden overflow-hidden border-gray-200 p-5 sm:border-r  md:flex-col " +
+                  (isAvailableTimesVisible ? "sm:w-1/2" : recurringEventCount ? "sm:w-1/2" : "sm:w-1/2")
                 }>
                 <UserAvatars
                   profile={profile}

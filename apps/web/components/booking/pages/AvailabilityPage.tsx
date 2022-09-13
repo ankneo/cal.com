@@ -35,7 +35,7 @@ import { timeZone as localStorageTimeZone } from "@lib/clock";
 import { useExposePlanGlobally } from "@lib/hooks/useExposePlanGlobally";
 import { isBrandingHidden } from "@lib/isBrandingHidden";
 
-import Gates, { Gate, GateState } from "@components/Gates";
+// import Gates, { Gate, GateState } from "@components/Gates";
 import AvailableTimes from "@components/booking/AvailableTimes";
 import TimeOptions from "@components/booking/TimeOptions";
 import { UserAvatars } from "@components/booking/UserAvatars";
@@ -114,7 +114,6 @@ const SlotPicker = ({
   seatsPerTimeSlot,
   weekStart = 0,
   profile,
-  ethSignature,
 }: {
   eventType: Pick<EventType, "id" | "schedulingType" | "slug" | "length" | "locations">;
   timeFormat: string;
@@ -124,7 +123,6 @@ const SlotPicker = ({
   users: string[];
   weekStart?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   profile: { slug: string | null; eventName?: string | null };
-  ethSignature?: string;
 }) => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>();
   const [browsingDate, setBrowsingDate] = useState<Dayjs>();
@@ -217,7 +215,6 @@ const SlotPicker = ({
           recurringCount={recurringEventCount}
           profile={profile}
           eventType={eventType}
-          ethSignature={ethSignature}
         />
       )}
     </>
@@ -317,13 +314,6 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   const [timeZone, setTimeZone] = useState<string>();
   const [timeFormat, setTimeFormat] = useState(detectBrowserTimeFormat);
   const [isAvailableTimesVisible, setIsAvailableTimesVisible] = useState<boolean>();
-  const [gateState, gateDispatcher] = useReducer(
-    (state: GateState, newState: Partial<GateState>) => ({
-      ...state,
-      ...newState,
-    }),
-    {}
-  );
 
   useEffect(() => {
     setTimeZone(localStorageTimeZone() || dayjs.tz.guess());
@@ -374,16 +364,8 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   if (rawSlug.length > 1) rawSlug.pop(); //team events have team name as slug, but user events have [user]/[type] as slug.
   const slug = rawSlug.join("/");
 
-  // Define conditional gates here
-  const gates = [
-    // Rainbow gate is only added if the event has both a `blockchainId` and a `smartContractAddress`
-    eventType.metadata && eventType.metadata.blockchainId && eventType.metadata.smartContractAddress
-      ? ("rainbow" as Gate)
-      : undefined,
-  ];
-
   return (
-    <Gates gates={gates} metadata={eventType.metadata} dispatch={gateDispatcher}>
+    <>
       <HeadSeo
         title={`${rescheduleUid ? t("reschedule") : ""} ${eventType.title} | ${profile.name}`}
         description={`${rescheduleUid ? t("reschedule") : ""} ${eventType.title}`}
@@ -621,7 +603,6 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
                 seatsPerTimeSlot={eventType.seatsPerTimeSlot || undefined}
                 recurringEventCount={recurringEventCount}
                 profile={profile}
-                ethSignature={gateState.rainbowToken}
               />
             </div>
           </div>
@@ -629,7 +610,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
         </main>
       </div>
       <Toaster position="bottom-right" />
-    </Gates>
+    </>
   );
 };
 

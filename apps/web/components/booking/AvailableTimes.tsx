@@ -28,7 +28,6 @@ type AvailableTimesProps = {
   isLoading: boolean;
   profile: { slug: string | null; eventName?: string | null };
   eventType: Pick<EventType, "length" | "locations">;
-  ethSignature?: string;
 };
 
 const AvailableTimes: FC<AvailableTimesProps> = ({
@@ -42,7 +41,6 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
   seatsPerTimeSlot,
   profile,
   eventType,
-  ethSignature,
 }) => {
   const { t, i18n } = useLocale();
   const router = useRouter();
@@ -165,7 +163,6 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
                 slug: eventTypeSlug,
                 /** Treat as recurring only when a count exist and it's not a rescheduling workflow */
                 count: recurringCount && !rescheduleUid ? recurringCount : undefined,
-                ethSignature,
               },
             };
 

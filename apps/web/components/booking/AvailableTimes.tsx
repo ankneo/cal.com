@@ -180,7 +180,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
                 setSelectedTime(slot.time);
                 e.preventDefault();
                 if (sdkActionManager) {
-                  sdkActionManager.fire("dateSelected", {
+                  sdkActionManager.fire("dateTimeSelected", {
                     slot: slot,
                   });
                 }

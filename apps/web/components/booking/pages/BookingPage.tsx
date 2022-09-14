@@ -234,6 +234,7 @@ const BookingPage = ({
       guests: guestListEmails,
       notes: booking.description || "",
       rescheduleReason: "",
+      smsReminderNumber: booking.smsReminderNumber || undefined,
       customInputs: eventType.customInputs.reduce(
         (customInputs, input) => ({
           ...customInputs,
@@ -508,7 +509,7 @@ const BookingPage = ({
                           content={recurringStrings.slice(5).map((aDate, key) => (
                             <p key={key}>{aDate}</p>
                           ))}>
-                          <p className="dark:text-darkgray-600  text-sm">
+                          <p className="dark:text-darkgray-600 text-sm">
                             {t("plus_more", { count: recurringStrings.length - 5 })}
                           </p>
                         </Tooltip>
@@ -800,7 +801,6 @@ const BookingPage = ({
                         placeholder={t("enter_phone_number")}
                         id="smsReminderNumber"
                         required
-                        disabled={disableInput}
                       />
                     </div>
                     {bookingForm.formState.errors.smsReminderNumber && (

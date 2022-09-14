@@ -61,7 +61,7 @@ export function Dialog(props: DialogProps) {
   );
 }
 type DialogContentProps = React.ComponentProps<typeof DialogPrimitive["Content"]> & {
-  size?: "xl" | "lg";
+  size?: "xl" | "lg" | "md";
   type: "creation" | "confirmation";
   title?: string;
   description?: string | undefined;
@@ -88,6 +88,8 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
             ? "p-0.5 sm:max-w-[98vw]"
             : props.size == "lg"
             ? "p-8 sm:max-w-[70rem]"
+            : props.size == "md"
+            ? "p-8 sm:max-w-[40rem]"
             : "p-8 sm:max-w-[35rem]",
           "max-h-[560px] overflow-visible overscroll-auto md:h-auto md:max-h-[inherit]",
           `${props.className || ""}`
@@ -115,7 +117,7 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
         )}
         {!props.useOwnActionButtons && (
           <DialogFooter>
-            <div className="mt-2">
+            <div className="mt-2 flex space-x-2">
               <DialogClose asChild>
                 {/* This will require the i18n string passed in */}
                 <Button color="minimal" onClick={props.actionOnClose}>

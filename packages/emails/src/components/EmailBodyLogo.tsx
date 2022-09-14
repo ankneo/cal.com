@@ -7,7 +7,7 @@ const CommentIE = ({ html = "" }) => <RawHtml html={`<!--[if mso | IE]>${html}<!
 
 const EmailBodyLogo = () => {
   const image = IS_PRODUCTION
-    ? WEBAPP_URL + "/emails/CalLogo@2x.png"
+    ? "https://wingify-email.s3.amazonaws.com/guids/CABINET_f039646715ac24a981ed2ae9b761aed4/images/96861578313690394.png"
     : "https://app.cal.com/emails/CalLogo@2x.png";
 
   return (
@@ -48,16 +48,14 @@ const EmailBodyLogo = () => {
                   }}>
                   <Row border="0" style={{ borderCollapse: "collapse", borderSpacing: "0px" }}>
                     <td style={{ width: "89px" }}>
-                      <a href={WEBAPP_URL} target="_blank" rel="noreferrer">
+                      <a href="https://vwo.com/" target="_blank" rel="noreferrer">
                         <img
-                          height="19"
                           src={image}
                           style={{
                             border: "0",
                             display: "block",
                             outline: "none",
                             textDecoration: "none",
-                            height: "19px",
                             width: "100%",
                             fontSize: "13px",
                           }}

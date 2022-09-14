@@ -80,7 +80,7 @@ export default class OrganizerScheduledEmail extends BaseEmail {
         filename: "event.ics",
         content: this.getiCalEventAsString(),
       },
-      from: `Cal.com <${this.getMailerOptions().from}>`,
+      from: `${this.getOrganizerName()} <${this.getOrganizerEmail()}>`,
       to: toAddresses.join(","),
       subject: `${this.t(subject, {
         eventType: this.calEvent.type,
@@ -123,6 +123,14 @@ ${callToAction}
 
   protected getOrganizerEnd(format: string) {
     return this.getRecipientTime(this.calEvent.endTime, format);
+  }
+
+  protected getOrganizerEmail() {
+    return this.calEvent.organizer.email;
+  }
+
+  protected getOrganizerName() {
+    return this.calEvent.organizer.name;
   }
 
   protected getFormattedDate() {

@@ -9,7 +9,7 @@ export default class AttendeeLocationChangeEmail extends AttendeeScheduledEmail 
         content: this.getiCalEventAsString(),
       },
       to: `${this.attendee.name} <${this.attendee.email}>`,
-      from: `${this.calEvent.organizer.name} <${this.getMailerOptions().from}>`,
+      from: `${this.calEvent.organizer.name} <${this.calEvent.organizer.email}>`,
       replyTo: this.calEvent.organizer.email,
       subject: `${this.t("location_changed_event_type_subject", {
         eventType: this.calEvent.type,

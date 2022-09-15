@@ -4,10 +4,10 @@ import dayjs from "@calcom/dayjs";
 import { getRichDescription } from "@calcom/lib/CalEventParser";
 import type { CalendarEvent } from "@calcom/types/Calendar";
 
-import { renderEmail } from "../";
+import { renderEmail } from "..";
 import OrganizerScheduledEmail from "./organizer-scheduled-email";
 
-export default class OrganizerRequestRescheduledEmail extends OrganizerScheduledEmail {
+export default class OrganizerRequestedToRescheduleEmail extends OrganizerScheduledEmail {
   private metadata: { rescheduleLink: string };
   constructor(calEvent: CalendarEvent, metadata: { rescheduleLink: string }) {
     super(calEvent);
@@ -28,7 +28,7 @@ export default class OrganizerRequestRescheduledEmail extends OrganizerScheduled
         name: this.calEvent.attendees[0].name,
         date: this.getFormattedDate(),
       })}`,
-      html: renderEmail("OrganizerRequestRescheduledEmail", {
+      html: renderEmail("OrganizerRequestedToRescheduleEmail", {
         calEvent: this.calEvent,
         attendee: this.calEvent.organizer,
       }),

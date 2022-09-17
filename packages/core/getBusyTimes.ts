@@ -33,6 +33,7 @@ export async function getBusyTimes(params: {
         status: {
           in: [BookingStatus.ACCEPTED],
         },
+        showBusy: true,
       },
       select: {
         id: true,

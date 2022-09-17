@@ -88,6 +88,7 @@ export default class GoogleCalendarService implements Calendar {
         reminders: {
           useDefault: true,
         },
+        transparency: calEventRaw.showBusy ? "opaque" : "transparent",
       };
 
       if (calEventRaw.location) {
@@ -164,6 +165,7 @@ export default class GoogleCalendarService implements Calendar {
         reminders: {
           useDefault: true,
         },
+        transparency: event.showBusy ? "opaque" : "transparent",
       };
 
       if (event.location) {

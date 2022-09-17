@@ -143,6 +143,7 @@ export class CalendarEventBuilder implements ICalendarEventBuilder {
           metadata: true,
           destinationCalendar: true,
           hideCalendarNotes: true,
+          blockCalendar: true,
         },
       });
     } catch (error) {

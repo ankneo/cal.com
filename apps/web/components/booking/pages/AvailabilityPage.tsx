@@ -185,10 +185,10 @@ const SlotPicker = ({
       <DatePicker
         isLoading={isLoading}
         className={classNames(
-          "mt-8 px-4 sm:mt-0 sm:min-w-[455px] md:px-5",
+          "mt-8 px-4 sm:mt-0 sm:min-w-[455px] md:w-1/2 md:px-5",
           selectedDate
-            ? "sm:dark:border-darkgray-200 border-gray-200 sm:w-1/2 sm:border-r sm:p-4 sm:pr-6 md:w-1/2 "
-            : "sm:p-4 md:w-1/2"
+            ? "sm:dark:border-darkgray-200 border-gray-200 sm:w-1/2 sm:border-r sm:p-4 sm:pr-6"
+            : "sm:p-4"
         )}
         includedDates={Object.keys(slots).filter((k) => slots[k].length > 0)}
         locale={isLocaleReady ? i18n.language : "en"}

@@ -60,9 +60,10 @@ model EventType {
   periodDays              Int?
   periodCountCalendarDays Boolean?
   requiresConfirmation    Boolean                 @default(false)
+  blockCalendar           Boolean                 @default(true)
   /// @zod.custom(imports.recurringEventType)
   recurringEvent          Json?
-  disableGuests           Boolean                 @default(false)
+  disableGuests           Boolean                 @default(true)
   hideCalendarNotes       Boolean                 @default(false)
   minimumBookingNotice    Int                     @default(120)
   beforeEventBuffer       Int                     @default(0)
@@ -143,7 +144,7 @@ model User {
   endTime              Int                     @default(1440)
   // </DEPRECATED>
   bufferTime           Int                     @default(0)
-  hideBranding         Boolean                 @default(false)
+  hideBranding         Boolean                 @default(true)
   theme                String?
   createdDate          DateTime                @default(now()) @map(name: "created")
   trialEndsAt          DateTime?
@@ -163,7 +164,7 @@ model User {
   identityProviderId   String?
   availability         Availability[]
   invitedTo            Int?
-  plan                 UserPlan                @default(TRIAL)
+  plan                 UserPlan                @default(PRO)
   webhooks             Webhook[]
   brandColor           String                  @default("#292929")
   darkBrandColor       String                  @default("#fafafa")
@@ -196,7 +197,7 @@ model Team {
   slug         String?      @unique
   logo         String?
   bio          String?
-  hideBranding Boolean      @default(false)
+  hideBranding Boolean      @default(true)
   members      Membership[]
   eventTypes   EventType[]
 }
@@ -293,6 +294,7 @@ model Booking {
   smsReminderNumber     String?
   workflowReminders     WorkflowReminder[]
   scheduledJobs         String[]
+  showBusy              Boolean              @default(true)
 }
 
 model Schedule {

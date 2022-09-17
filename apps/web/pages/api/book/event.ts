@@ -137,6 +137,7 @@ const getEventTypesFromDB = async (eventTypeId: number) => {
       periodDays: true,
       periodCountCalendarDays: true,
       requiresConfirmation: true,
+      blockCalendar: true,
       userId: true,
       price: true,
       currency: true,
@@ -430,6 +431,7 @@ async function handler(req: NextApiRequest) {
     destinationCalendar: eventType.destinationCalendar || organizerUser.destinationCalendar,
     hideCalendarNotes: eventType.hideCalendarNotes,
     requiresConfirmation: eventType.requiresConfirmation ?? false,
+    showBusy: eventType.blockCalendar ?? true,
     eventTypeId: eventType.id,
   };
 
@@ -595,6 +597,7 @@ async function handler(req: NextApiRequest) {
       location: evt.location,
       eventType: eventTypeRel,
       smsReminderNumber: reqBody.smsReminderNumber,
+      showBusy: evt.showBusy,
       attendees: {
         createMany: {
           data: evt.attendees.map((attendee) => {

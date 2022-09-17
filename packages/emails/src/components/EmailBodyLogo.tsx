@@ -6,9 +6,8 @@ import Row from "./Row";
 const CommentIE = ({ html = "" }) => <RawHtml html={`<!--[if mso | IE]>${html}<![endif]-->`} />;
 
 const EmailBodyLogo = () => {
-  const image = IS_PRODUCTION
-    ? "https://wingify-email.s3.amazonaws.com/guids/CABINET_f039646715ac24a981ed2ae9b761aed4/images/96861578313690394.png"
-    : "https://app.cal.com/emails/CalLogo@2x.png";
+  const image =
+    "https://wingify-email.s3.amazonaws.com/guids/CABINET_f039646715ac24a981ed2ae9b761aed4/images/96861578313690394.png";
 
   return (
     <>

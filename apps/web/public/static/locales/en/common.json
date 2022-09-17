@@ -999,6 +999,8 @@
   "web_conference": "Web conference",
   "number_for_sms_reminders": "Phone number (for SMS reminders)",
   "requires_confirmation": "Requires confirmation",
+  "block_calendar": "Block calendar",
+  "block_calendar_description": "If enabled, the calendar slot blocked will not show as available for someone else to book.",
   "nr_event_type_one": "{{count}} event type",
   "nr_event_type_other": "{{count}} event types",
   "add_action": "Add action",

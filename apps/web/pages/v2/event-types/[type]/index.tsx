@@ -82,6 +82,7 @@ export type FormValues = {
   giphyThankYouPage: string;
   blockchainId: number;
   smartContractAddress: string;
+  blockCalendar: boolean;
 };
 
 const querySchema = z.object({
@@ -329,6 +330,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       periodEndDate: true,
       periodCountCalendarDays: true,
       requiresConfirmation: true,
+      blockCalendar: true,
       recurringEvent: true,
       hideCalendarNotes: true,
       disableGuests: true,

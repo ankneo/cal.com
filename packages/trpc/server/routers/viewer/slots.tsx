@@ -142,6 +142,7 @@ async function getEventType(ctx: { prisma: typeof prisma }, input: z.infer<typeo
           ...availabilityUserSelect,
         },
       },
+      blockCalendar: true,
     },
   });
 }

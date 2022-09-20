@@ -109,26 +109,28 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
       time: string | number | dayjs.Dayjs | Date | null | undefined;
       bookingUid: string;
     }) => {
-      mutation.mutate({
-        start: dayjs(slot.time).format(),
-        end: dayjs(slot.time).add(eventType.length, "minute").format(),
-        eventTypeId,
-        eventTypeSlug,
-        timeZone: timeZone(),
-        language: i18n.language,
-        rescheduleUid: rescheduleUid as string,
-        bookingUid: slot.bookingUid,
-        user: router.query.user,
-        metadata: {},
-        hasHashedBookingLink: false,
-        hashedLink: "",
-        email: router.query.email as string,
-        name: router.query.name as string,
-        customInputs: [],
-        location: getEventLocationValue(locations, {
-          type: eventType.locations ? locations[0]?.type : "",
-        }),
-      });
+      if (router.query.email !== "null" && router.query.name !== "null") {
+        mutation.mutate({
+          start: dayjs(slot.time).format(),
+          end: dayjs(slot.time).add(eventType.length, "minute").format(),
+          eventTypeId,
+          eventTypeSlug,
+          timeZone: timeZone(),
+          language: i18n.language,
+          rescheduleUid: rescheduleUid as string,
+          bookingUid: slot.bookingUid,
+          user: router.query.user,
+          metadata: {},
+          hasHashedBookingLink: false,
+          hashedLink: "",
+          email: router.query.email as string,
+          name: router.query.name as string,
+          customInputs: [],
+          location: getEventLocationValue(locations, {
+            type: eventType.locations ? locations[0]?.type : "",
+          }),
+        });
+      }
     };
   }
 

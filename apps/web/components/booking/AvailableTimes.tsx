@@ -47,7 +47,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
   const { rescheduleUid } = router.query;
 
   const [brand, setBrand] = useState("#292929");
-  const [selectedTime, setSelectedTime] = useState<string>();
+  const [selectedSlot, setSelectedSlot] = useState<Slot>();
 
   const locations: LocationObject[] = useMemo(
     () => (eventType.locations as LocationObject[]) || [],
@@ -134,7 +134,20 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
 
   useEffect(() => {
     setBrand(getComputedStyle(document.documentElement).getPropertyValue("--brand-color").trim());
-  }, []);
+    if (selectedSlot && date.format("YYYY-MM-DD") === dayjs(selectedSlot.time).format("YYYY-MM-DD")) {
+      if (sdkActionManager) {
+        sdkActionManager.fire("dateTimeSelected", {
+          slot: selectedSlot,
+        });
+      }
+    } else {
+      if (sdkActionManager) {
+        sdkActionManager.fire("dateChanged", {
+          date: date.format("YYYY-MM-DD"),
+        });
+      }
+    }
+  }, [date, selectedSlot]);
 
   return (
     <div className="dark:bg-darkgray-100 mt-8 flex flex-col px-4 text-center sm:mt-0 sm:w-1/2 sm:p-5 md:-mb-5">
@@ -177,13 +190,8 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
 
             const handleClick = (e: { preventDefault: () => void }) => {
               if (window.isEmbed()) {
-                setSelectedTime(slot.time);
+                setSelectedSlot(slot);
                 e.preventDefault();
-                if (sdkActionManager) {
-                  sdkActionManager.fire("dateTimeSelected", {
-                    slot: slot,
-                  });
-                }
               } else {
                 return true;
               }
@@ -206,7 +214,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
                     <a
                       className={classNames(
                         "text-primary-500 hover:border-gray-900 hover:bg-gray-50",
-                        window.isEmbed() && selectedTime === slot.time
+                        window.isEmbed() && selectedSlot && selectedSlot.time === slot.time
                           ? "bg-darkgray-200 hover:bg-darkgray-300 hover:border-darkmodebrand dark:text-primary-500 border-transparent text-neutral-200 dark:bg-white"
                           : "dark:bg-darkgray-200 dark:hover:border-darkgray-300 dark:hover:border-darkmodebrand bg-white dark:border-transparent dark:text-neutral-200",
                         "mb-2 block rounded-md border py-2 text-sm font-medium",

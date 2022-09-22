@@ -33,7 +33,9 @@ export function Dialog(props: DialogProps) {
       }
       router.push(
         {
-          pathname: router.pathname,
+          // This is temporary till we are doing rewrites to /v2.
+          // If not done, opening/closing a modalbox can take the user to /v2 paths.
+          pathname: router.pathname.replace("/v2", ""),
           query: {
             ...router.query,
           },
@@ -64,7 +66,7 @@ type DialogContentProps = React.ComponentProps<typeof DialogPrimitive["Content"]
   size?: "xl" | "lg" | "md";
   type: "creation" | "confirmation";
   title?: string;
-  description?: string | undefined;
+  description?: string | JSX.Element | undefined;
   closeText?: string;
   actionDisabled?: boolean;
   actionText?: string;
@@ -73,10 +75,11 @@ type DialogContentProps = React.ComponentProps<typeof DialogPrimitive["Content"]
   useOwnActionButtons?: boolean;
   actionOnClick?: (e: Event | React.MouseEvent<HTMLElement, MouseEvent>) => void;
   actionOnClose?: () => void;
+  actionProps?: React.ComponentProps<typeof Button>;
 };
 
 export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
-  ({ children, Icon, ...props }, forwardedRef) => (
+  ({ children, Icon, actionProps, ...props }, forwardedRef) => (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fadeIn fixed inset-0 z-40 bg-gray-500 bg-opacity-75 transition-opacity" />
       {/*zIndex one less than Toast */}
@@ -85,7 +88,7 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
         className={classNames(
           "fadeIn fixed left-1/2 top-1/2 z-[9998] min-w-[360px] -translate-x-1/2 -translate-y-1/2 rounded bg-white text-left shadow-xl focus-visible:outline-none sm:w-full sm:align-middle",
           props.size == "xl"
-            ? "p-0.5 sm:max-w-[98vw]"
+            ? "p-8 sm:max-w-[90rem]"
             : props.size == "lg"
             ? "p-8 sm:max-w-[70rem]"
             : props.size == "md"
@@ -111,7 +114,7 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
             )}
             <div>
               {props.title && <DialogHeader title={props.title} />}
-              {props.description && <p className="mb-6 text-sm text-gray-500">Optional Description</p>}
+              {props.description && <p className="mb-6 text-sm text-gray-500">{props.description}</p>}
             </div>
           </div>
         )}
@@ -125,11 +128,15 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
                 </Button>
               </DialogClose>
               {props.actionOnClick ? (
-                <Button color="primary" disabled={props.actionDisabled} onClick={props.actionOnClick}>
+                <Button
+                  color="primary"
+                  disabled={props.actionDisabled}
+                  onClick={props.actionOnClick}
+                  {...actionProps}>
                   {props.actionText}
                 </Button>
               ) : (
-                <Button color="primary" type="submit" disabled={props.actionDisabled}>
+                <Button color="primary" type="submit" disabled={props.actionDisabled} {...actionProps}>
                   {props.actionText}
                 </Button>
               )}

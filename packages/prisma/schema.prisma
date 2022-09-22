@@ -476,6 +476,7 @@ enum AppCategories {
   payment
   video
   web3
+  automation
 }
 
 model App {

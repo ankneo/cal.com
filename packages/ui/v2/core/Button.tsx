@@ -45,7 +45,7 @@ const variantClassName = {
   minimal:
     "text-gray-700 bg-transparent hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:bg-gray-100 focus:ring-brand-900 dark:text-darkgray-900 hover:dark:text-gray-50",
   minimalSecondary:
-    "text-gray-700 bg-transparent hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:bg-gray-100 focus:ring-brand-900 dark:text-darkgray-900 hover:dark:text-gray-50 border border-transparent hover:border-gray-300",
+    "text-gray-700 bg-transparent hover:bg-gray-100 dark:hover:bg-darkgray-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:bg-gray-100 focus:ring-brand-900 dark:text-darkgray-900 hover:dark:text-gray-50 border border-transparent hover:border-gray-300 dark:hover:border-darkgray-300",
   destructive:
     "text-gray-900 focus:text-red-700 bg-transparent hover:bg-red-100 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:bg-red-100 focus:ring-red-700",
 };
@@ -65,6 +65,7 @@ export const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonPr
     loading = false,
     color = "primary",
     size = "base",
+    type = "button",
     StartIcon,
     EndIcon,
     shallow,
@@ -82,6 +83,7 @@ export const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonPr
     {
       ...passThroughProps,
       disabled,
+      type: !isLink ? type : undefined,
       ref: forwardedRef,
       className: classNames(
         // base styles independent what type of button it is

@@ -85,7 +85,7 @@ const commons = {
   workflows: [],
   users: [user],
   metadata: {},
-  blockCalendar: false,
+  blockCalendar: true,
 };
 
 const min15Event = {

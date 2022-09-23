@@ -25,7 +25,7 @@ export default class AttendeeWasRequestedToRescheduleEmail extends OrganizerSche
       to: toAddresses.join(","),
       subject: `${this.t("requested_to_reschedule_subject_attendee", {
         eventType: this.calEvent.type,
-        name: this.calEvent.attendees[0].name,
+        name: this.calEvent.organizer.name,
       })}`,
       html: renderEmail("AttendeeWasRequestedToRescheduleEmail", {
         calEvent: this.calEvent,
@@ -48,7 +48,7 @@ export default class AttendeeWasRequestedToRescheduleEmail extends OrganizerSche
       productId: "calendso/ics",
       title: this.t("ics_event_title", {
         eventType: this.calEvent.type,
-        name: this.calEvent.attendees[0].name,
+        name: this.calEvent.organizer.name,
       }),
       description: this.getTextBody(),
       duration: { minutes: dayjs(this.calEvent.endTime).diff(dayjs(this.calEvent.startTime), "minute") },

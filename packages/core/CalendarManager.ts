@@ -186,7 +186,8 @@ export const updateEvent = async (
   credential: Credential,
   calEvent: CalendarEvent,
   bookingRefUid: string | null,
-  externalCalendarId: string | null
+  externalCalendarId: string | null,
+  organizerRescheduled?: boolean | false
 ): Promise<EventResult<NewCalendarEventType>> => {
   const uid = getUid(calEvent);
   const calendar = getCalendar(credential);
@@ -197,7 +198,7 @@ export const updateEvent = async (
   const updatedResult =
     calendar && bookingRefUid
       ? await calendar
-          .updateEvent(bookingRefUid, calEvent, externalCalendarId)
+          .updateEvent(bookingRefUid, calEvent, externalCalendarId, organizerRescheduled)
           .then((event) => {
             success = true;
             return event;

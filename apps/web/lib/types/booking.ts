@@ -28,6 +28,7 @@ export type BookingCreateBody = {
   hashedLink?: string | null;
   smsReminderNumber?: string;
   ethSignature?: string;
+  noEmail?: boolean | false;
 };
 
 export type BookingResponse = Booking & {

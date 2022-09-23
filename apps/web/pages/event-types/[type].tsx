@@ -970,7 +970,6 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                               label={t("block_calendar")}
                               description={t("block_calendar_description")}
                               defaultChecked={eventType.blockCalendar}
-                              disabled={enableSeats}
                               checked={value}
                               onChange={(e) => onChange(e?.target.checked)}
                             />

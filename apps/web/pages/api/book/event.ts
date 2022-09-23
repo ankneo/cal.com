@@ -198,7 +198,7 @@ async function ensureAvailableUsers(
       { user, eventType }
     );
 
-    console.log("calendarBusyTimes==>>>", bufferedBusyTimes);
+    // console.log("calendarBusyTimes==>>>", bufferedBusyTimes);
 
     let isAvailableToBeBooked = true;
     try {
@@ -353,7 +353,7 @@ async function handler(req: NextApiRequest) {
     }
   }
 
-  console.log("available users", users);
+  // console.log("available users", users);
 
   // @TODO: use the returned address somewhere in booking creation?
   // const address: string | undefined = await ...
@@ -381,7 +381,7 @@ async function handler(req: NextApiRequest) {
   const uid = translator.fromUUID(uuidv5(seed, uuidv5.URL));
 
   const bookingLocation = getLocationValueForDB(reqBody.location, eventType.locations);
-  console.log(bookingLocation, reqBody.location, eventType.locations);
+  // console.log(bookingLocation, reqBody.location, eventType.locations);
   const customInputs = {} as NonNullable<CalendarEvent["customInputs"]>;
 
   const teamMemberPromises =
@@ -710,12 +710,16 @@ async function handler(req: NextApiRequest) {
   const eventManager = new EventManager({ ...organizerUser, credentials });
 
   if (originalRescheduledBooking?.uid) {
+    const userReschedulingIsOwner = currentUser
+      ? originalRescheduledBooking?.user?.id === currentUser.id
+      : false;
     // Use EventManager to conditionally use all needed integrations.
     const updateManager = await eventManager.reschedule(
       evt,
       originalRescheduledBooking.uid,
       booking?.id,
-      reqBody.rescheduleReason
+      reqBody.rescheduleReason,
+      userReschedulingIsOwner
     );
     // This gets overridden when updating the event - to check if notes have been hidden or not. We just reset this back
     // to the default description when we are sending the emails.
@@ -846,10 +850,10 @@ async function handler(req: NextApiRequest) {
 
   // Send Webhook call if hooked to BOOKING_CREATED & BOOKING_RESCHEDULED
   const subscribers = await getWebhooks(subscriberOptions);
-  console.log("evt:", {
-    ...evt,
-    metadata: reqBody.metadata,
-  });
+  // console.log("evt:", {
+  //   ...evt,
+  //   metadata: reqBody.metadata,
+  // });
   const bookingId = booking?.id;
 
   const eventTypeInfo: EventTypeInfo = {

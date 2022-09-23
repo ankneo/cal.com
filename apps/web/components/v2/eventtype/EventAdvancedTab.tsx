@@ -208,7 +208,6 @@ export const EventAdvancedTab = ({ eventType, team }: Pick<EventTypeSetupInfered
               name="blockCalendar"
               checked={value}
               onCheckedChange={(e) => onChange(e)}
-              disabled={seatsEnabled}
               fitToHeight={true}
             />
             <div className="flex flex-col">

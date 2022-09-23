@@ -125,6 +125,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
           hashedLink: "",
           email: router.query.email as string,
           name: router.query.name as string,
+          noEmail: true,
           customInputs: [],
           location: getEventLocationValue(locations, {
             type: eventType.locations ? locations[0]?.type : "",

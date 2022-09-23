@@ -313,12 +313,12 @@ export async function getSchedule(input: z.infer<typeof getScheduleSchema>, ctx:
     currentCheckedTime = currentCheckedTime.add(1, "day");
   } while (currentCheckedTime.isBefore(endTime));
 
-  logger.debug(`getSlots took ${getSlotsTime}ms and executed ${getSlotsCount} times`);
+  // logger.debug(`getSlots took ${getSlotsTime}ms and executed ${getSlotsCount} times`);
 
-  logger.debug(
-    `checkForAvailability took ${checkForAvailabilityTime}ms and executed ${checkForAvailabilityCount} times`
-  );
-  logger.silly(`Available slots: ${JSON.stringify(computedAvailableSlots)}`);
+  // logger.debug(
+  //   `checkForAvailability took ${checkForAvailabilityTime}ms and executed ${checkForAvailabilityCount} times`
+  // );
+  // logger.silly(`Available slots: ${JSON.stringify(computedAvailableSlots)}`);
 
   return {
     slots: computedAvailableSlots,

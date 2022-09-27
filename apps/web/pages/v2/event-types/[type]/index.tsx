@@ -154,6 +154,7 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
         endDate: periodDates.endDate,
       },
       schedulingType: eventType.schedulingType,
+      minimumBookingNotice: eventType.minimumBookingNotice,
     },
   });
 

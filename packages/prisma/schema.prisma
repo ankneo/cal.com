@@ -38,7 +38,7 @@ model EventType {
   description             String?
   position                Int                     @default(0)
   /// @zod.custom(imports.eventTypeLocations)
-  locations               Json?
+  locations               Json?                   @default("[{\"type\":\"integrations:google:meet\"}]")
   length                  Int
   hidden                  Boolean                 @default(false)
   users                   User[]                  @relation("user_eventtype")

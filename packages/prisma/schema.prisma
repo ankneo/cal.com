@@ -145,7 +145,7 @@ model User {
   // </DEPRECATED>
   bufferTime           Int                     @default(0)
   hideBranding         Boolean                 @default(true)
-  theme                String?
+  theme                String?                 @default("light")
   createdDate          DateTime                @default(now()) @map(name: "created")
   trialEndsAt          DateTime?
   eventTypes           EventType[]             @relation("user_eventtype")
@@ -157,7 +157,7 @@ model User {
   selectedCalendars    SelectedCalendar[]
   completedOnboarding  Boolean                 @default(false)
   locale               String?
-  timeFormat           Int?                    @default(12)
+  timeFormat           Int?                    @default(24)
   twoFactorSecret      String?
   twoFactorEnabled     Boolean                 @default(false)
   identityProvider     IdentityProvider        @default(CAL)

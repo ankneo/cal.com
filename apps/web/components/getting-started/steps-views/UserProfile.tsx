@@ -85,6 +85,7 @@ const UserProfile = (props: IUserProfile) => {
       slug: "vwo_demo",
       length: 45,
       hidden: true,
+      eventName: "VWO Demo with {HOST}/{ATTENDEE}",
     },
   ];
 

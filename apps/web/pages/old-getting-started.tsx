@@ -96,6 +96,7 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
       slug: "vwo_demo",
       length: 45,
       hidden: true,
+      eventName: "VWO Demo with {HOST}/{ATTENDEE}",
     },
   ];
 

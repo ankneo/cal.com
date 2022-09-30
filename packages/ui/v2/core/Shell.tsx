@@ -279,7 +279,7 @@ function UserDropdown({ small }: { small?: boolean }) {
             <HelpMenuItem onHelpItemSelect={() => onHelpItemSelect()} />
           ) : (
             <>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <button
                   onClick={() => {
                     mutation.mutate({ away: !user?.away });
@@ -297,7 +297,7 @@ function UserDropdown({ small }: { small?: boolean }) {
                   />
                   {user.away ? t("set_as_free") : t("set_as_away")}
                 </button>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuSeparator className="h-px bg-gray-200" />
               {user.username && (
                 <DropdownMenuItem>
@@ -312,7 +312,7 @@ function UserDropdown({ small }: { small?: boolean }) {
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator className="h-px bg-gray-200" />
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <a
                   href={JOIN_SLACK}
                   target="_blank"
@@ -355,8 +355,8 @@ function UserDropdown({ small }: { small?: boolean }) {
                   <Icon.FiDownload className="h-4 w-4 text-gray-500 ltr:mr-2 rtl:ml-3" />{" "}
                   {t("download_desktop_app")}
                 </a>
-              </DropdownMenuItem>
-              
+              </DropdownMenuItem> */}
+
               <DropdownMenuSeparator className="h-px bg-gray-200" />
               <DropdownMenuItem>
                 <a

@@ -1,8 +1,8 @@
 import { EventType } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, useEffect, useMemo, useState } from "react";
-import { useMutation } from "react-query";
 
 import { getEventLocationValue } from "@calcom/app-store/locations";
 import { LocationObject } from "@calcom/core/location";

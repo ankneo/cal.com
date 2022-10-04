@@ -127,6 +127,7 @@ export type FormValues = {
   giphyThankYouPage: string;
   blockchainId: number;
   smartContractAddress: string;
+  blockCalendar: boolean;
 };
 
 const SuccessRedirectEdit = <T extends UseFormReturn<FormValues>>({
@@ -965,6 +966,23 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                           )}
                         />
 
+                        <Controller
+                          name="blockCalendar"
+                          defaultValue={eventType.blockCalendar}
+                          render={({ field: { value, onChange } }) => (
+                            <CheckboxField
+                              id="blockCalendar"
+                              descriptionAsLabel
+                              name="blockCalendar"
+                              label={t("block_calendar")}
+                              description={t("block_calendar_description")}
+                              defaultChecked={eventType.blockCalendar}
+                              checked={value}
+                              onChange={(e) => onChange(e?.target.checked)}
+                            />
+                          )}
+                        />
+
                         <RecurringEventController
                           paymentEnabled={hasPaymentIntegration && requirePayment}
                           onRecurringEventDefined={setRecurringEventDefined}
@@ -1320,6 +1338,7 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                                       formMethods.setValue("seatsPerTimeSlot", defaultSeatsPro);
                                       formMethods.setValue("disableGuests", true);
                                       formMethods.setValue("requiresConfirmation", false);
+                                      formMethods.setValue("blockCalendar", true);
                                     } else {
                                       setEnableSeats(false);
                                       formMethods.setValue("seatsPerTimeSlot", null);
@@ -1327,6 +1346,7 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                                         "requiresConfirmation",
                                         eventType.requiresConfirmation
                                       );
+                                      formMethods.setValue("blockCalendar", eventType.blockCalendar);
                                       formMethods.setValue("disableGuests", eventType.disableGuests);
                                     }
                                   }}
@@ -1865,6 +1885,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       currency: true,
       destinationCalendar: true,
       seatsPerTimeSlot: true,
+      blockCalendar: true,
     },
   });
 

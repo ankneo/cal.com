@@ -199,6 +199,25 @@ export const EventAdvancedTab = ({ eventType, team }: Pick<EventTypeSetupInfered
       />
       <hr />
       <Controller
+        name="blockCalendar"
+        defaultValue={eventType.blockCalendar}
+        render={({ field: { value, onChange } }) => (
+          <div className="flex space-x-3">
+            <Switch
+              name="blockCalendar"
+              checked={value}
+              onCheckedChange={(e) => onChange(e)}
+              fitToHeight={true}
+            />
+            <div className="flex flex-col">
+              <Label className="text-sm font-semibold leading-none text-black">{t("block_calendar")}</Label>
+              <p className="-mt-2 text-sm leading-normal text-gray-600">{t("block_calendar_description")}</p>
+            </div>
+          </div>
+        )}
+      />
+      <hr />
+      <Controller
         name="disableGuests"
         control={formMethods.control}
         defaultValue={eventType.disableGuests}

@@ -13,7 +13,7 @@ export function LocationInfo(props: { calEvent: CalendarEvent; t: TFunction }) {
 
   // We would not be able to determine provider name for DefaultEventLocationTypes
   const providerName = guessEventLocationType(props.calEvent.location)?.label;
-  logger.debug(`LocationInfo: ${JSON.stringify(props.calEvent)} ${providerName}`);
+  // logger.debug(`LocationInfo: ${JSON.stringify(props.calEvent)} ${providerName}`);
 
   const location = props.calEvent.location;
   let meetingUrl = location?.search(/^https?:/) !== -1 ? location : undefined;

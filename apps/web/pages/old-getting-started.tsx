@@ -91,20 +91,11 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
 
   const DEFAULT_EVENT_TYPES = [
     {
-      title: t("15min_meeting"),
-      slug: "15min",
-      length: 15,
-    },
-    {
-      title: t("30min_meeting"),
-      slug: "30min",
-      length: 30,
-    },
-    {
-      title: t("secret_meeting"),
-      slug: "secret",
-      length: 15,
+      title: t("vwo_demo"),
+      slug: "vwo_demo",
+      length: 45,
       hidden: true,
+      eventName: "VWO Demo with {HOST}/{ATTENDEE}",
     },
   ];
 

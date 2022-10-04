@@ -31,7 +31,7 @@ const transporter = nodemailer.createTransport<TransportOptions>({
   ...(serverConfig.transport as TransportOptions),
 } as TransportOptions);
 
-const usernameSlug = (username: string) => slugify(username) + "-" + randomString(6).toLowerCase();
+const usernameSlug = (username: string) => username.toLowerCase().split("@")[0];
 
 const providers: Provider[] = [
   CredentialsProvider({
@@ -393,7 +393,7 @@ export default NextAuth({
 
         if (existingUserWithEmail) {
           // if self-hosted then we can allow auto-merge of identity providers if email is verified
-          if (!hostedCal && existingUserWithEmail.emailVerified) {
+          if (hostedCal && existingUserWithEmail.emailVerified) {
             return true;
           }
 
@@ -408,7 +408,7 @@ export default NextAuth({
               data: {
                 // Slugify the incoming name and append a few random characters to
                 // prevent conflicts for users with the same name.
-                username: usernameSlug(user.name),
+                username: usernameSlug(user.email),
                 emailVerified: new Date(Date.now()),
                 name: user.name,
                 identityProvider: idP,
@@ -430,7 +430,7 @@ export default NextAuth({
           data: {
             // Slugify the incoming name and append a few random characters to
             // prevent conflicts for users with the same name.
-            username: usernameSlug(user.name),
+            username: usernameSlug(user.email),
             emailVerified: new Date(Date.now()),
             name: user.name,
             email: user.email,

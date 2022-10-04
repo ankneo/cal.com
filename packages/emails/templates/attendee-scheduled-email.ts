@@ -30,6 +30,7 @@ export default class AttendeeScheduledEmail extends BaseEmail {
       recurrenceRule = new RRule(this.calEvent.recurringEvent).toString().replace("RRULE:", "");
     }
     const icsEvent = createEvent({
+      method: "REQUEST",
       start: dayjs(this.calEvent.startTime)
         .utc()
         .toArray()
@@ -39,7 +40,7 @@ export default class AttendeeScheduledEmail extends BaseEmail {
       productId: "calendso/ics",
       title: this.t("ics_event_title", {
         eventType: this.calEvent.type,
-        name: this.calEvent.attendees[0].name,
+        name: this.calEvent.organizer.name,
       }),
       description: this.getTextBody(),
       duration: { minutes: dayjs(this.calEvent.endTime).diff(dayjs(this.calEvent.startTime), "minute") },
@@ -47,6 +48,9 @@ export default class AttendeeScheduledEmail extends BaseEmail {
       attendees: this.calEvent.attendees.map((attendee: Person) => ({
         name: attendee.name,
         email: attendee.email,
+        rsvp: true,
+        role: "REQ-PARTICIPANT",
+        partstat: "ACCEPTED",
       })),
       ...{ recurrenceRule },
       status: "CONFIRMED",
@@ -64,7 +68,7 @@ export default class AttendeeScheduledEmail extends BaseEmail {
         content: this.getiCalEventAsString(),
       },
       to: `${this.attendee.name} <${this.attendee.email}>`,
-      from: `${this.calEvent.organizer.name} <${this.getMailerOptions().from}>`,
+      from: `${this.calEvent.organizer.name} <${this.calEvent.organizer.email}>`,
       replyTo: [...this.calEvent.attendees.map(({ email }) => email), this.calEvent.organizer.email],
       subject: `${this.t("confirmed_event_type_subject", {
         eventType: this.calEvent.type,

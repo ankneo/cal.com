@@ -34,7 +34,7 @@ import { timeZone as localStorageTimeZone } from "@lib/clock";
 import { useExposePlanGlobally } from "@lib/hooks/useExposePlanGlobally";
 import { isBrandingHidden } from "@lib/isBrandingHidden";
 
-import Gates, { Gate, GateState } from "@components/Gates";
+// import Gates, { Gate, GateState } from "@components/Gates";
 import AvailableTimes from "@components/booking/AvailableTimes";
 import TimeOptions from "@components/booking/TimeOptions";
 import { UserAvatars } from "@components/booking/UserAvatars";
@@ -112,16 +112,16 @@ const SlotPicker = ({
   users,
   seatsPerTimeSlot,
   weekStart = 0,
-  ethSignature,
+  profile,
 }: {
-  eventType: Pick<EventType, "id" | "schedulingType" | "slug">;
+  eventType: Pick<EventType, "id" | "schedulingType" | "slug" | "length" | "locations">;
   timeFormat: string;
   timeZone?: string;
   seatsPerTimeSlot?: number;
   recurringEventCount?: number;
   users: string[];
   weekStart?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-  ethSignature?: string;
+  profile: { slug: string | null; eventName?: string | null };
 }) => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>();
   const [browsingDate, setBrowsingDate] = useState<Dayjs>();
@@ -170,19 +170,28 @@ const SlotPicker = ({
 
   const slots = useMemo(() => ({ ..._2, ..._1 }), [_1, _2]);
 
+  const availableDate = () => {
+    const usableDates = Object.keys(slots).filter((k) => slots[k].length > 0);
+    usableDates.length > 0 &&
+      setSelectedDate(
+        timeZone === "Etc/GMT" ? dayjs.utc(usableDates[0]) : dayjs.tz(usableDates[0], timeZone)
+      );
+    return undefined;
+  };
+
   return (
     <>
       <DatePicker
         isLoading={isLoading}
         className={classNames(
-          "mt-8 w-full px-4 pb-4 sm:mt-0 sm:min-w-[455px] md:px-5",
+          "mt-8 px-4 pb-4 sm:mt-0 sm:min-w-[455px] md:w-1/2 md:px-5",
           selectedDate
-            ? "sm:dark:border-darkgray-200 border-gray-200 sm:w-1/2 sm:border-r sm:p-4 sm:pr-6 md:w-1/3"
+            ? "sm:dark:border-darkgray-200 border-gray-200 sm:w-1/2 sm:border-r sm:p-4 sm:pr-6"
             : "sm:p-4"
         )}
         includedDates={Object.keys(slots).filter((k) => slots[k].length > 0)}
         locale={isLocaleReady ? i18n.language : "en"}
-        selected={selectedDate}
+        selected={selectedDate || availableDate()}
         onChange={(newDate) => {
           setDate(newDate.format("YYYY-MM-DD"));
         }}
@@ -203,7 +212,8 @@ const SlotPicker = ({
           eventTypeSlug={eventType.slug}
           seatsPerTimeSlot={seatsPerTimeSlot}
           recurringCount={recurringEventCount}
-          ethSignature={ethSignature}
+          profile={profile}
+          eventType={eventType}
         />
       )}
     </>
@@ -303,13 +313,6 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   const [timeZone, setTimeZone] = useState<string>();
   const [timeFormat, setTimeFormat] = useState(detectBrowserTimeFormat);
   const [isAvailableTimesVisible, setIsAvailableTimesVisible] = useState<boolean>();
-  const [gateState, gateDispatcher] = useReducer(
-    (state: GateState, newState: Partial<GateState>) => ({
-      ...state,
-      ...newState,
-    }),
-    {}
-  );
 
   useEffect(() => {
     setTimeZone(localStorageTimeZone() || dayjs.tz.guess());
@@ -340,8 +343,8 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   // Recurring event sidebar requires more space
   const maxWidth = isAvailableTimesVisible
     ? recurringEventCount
-      ? "max-w-6xl"
-      : "max-w-5xl"
+      ? "max-w-4xl"
+      : "max-w-3xl"
     : recurringEventCount
     ? "max-w-4xl"
     : "max-w-3xl";
@@ -360,16 +363,8 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   if (rawSlug.length > 1) rawSlug.pop(); //team events have team name as slug, but user events have [user]/[type] as slug.
   const slug = rawSlug.join("/");
 
-  // Define conditional gates here
-  const gates = [
-    // Rainbow gate is only added if the event has both a `blockchainId` and a `smartContractAddress`
-    eventType.metadata && eventType.metadata.blockchainId && eventType.metadata.smartContractAddress
-      ? ("rainbow" as Gate)
-      : undefined,
-  ];
-
   return (
-    <Gates gates={gates} metadata={eventType.metadata} dispatch={gateDispatcher}>
+    <>
       <HeadSeo
         title={`${rescheduleUid ? t("reschedule") : ""} ${eventType.title} | ${profile.name}`}
         description={`${rescheduleUid ? t("reschedule") : ""} ${eventType.title}`}
@@ -399,7 +394,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
               isEmbed ? "mx-auto" : maxWidth
             )}>
             {/* mobile: details */}
-            <div className="block px-4 pt-4 sm:p-8 md:hidden">
+            <div className="hidden px-4 pt-4 sm:p-8 md:hidden">
               <div>
                 <UserAvatars
                   profile={profile}
@@ -500,8 +495,8 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
             <div className="overflow-hidden sm:flex">
               <div
                 className={
-                  "sm:dark:border-darkgray-200 hidden overflow-hidden border-gray-200 p-5 sm:border-r md:flex md:flex-col " +
-                  (isAvailableTimesVisible ? "sm:w-1/3" : recurringEventCount ? "sm:w-2/3" : "sm:w-1/2")
+                  "sm:dark:border-darkgray-200 hidden overflow-hidden border-gray-200 p-5 sm:border-r  md:flex-col " +
+                  (isAvailableTimesVisible ? "sm:w-1/2" : recurringEventCount ? "sm:w-1/2" : "sm:w-1/2")
                 }>
                 <UserAvatars
                   profile={profile}
@@ -608,7 +603,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
                 users={userList}
                 seatsPerTimeSlot={eventType.seatsPerTimeSlot || undefined}
                 recurringEventCount={recurringEventCount}
-                ethSignature={gateState.rainbowToken}
+                profile={profile}
               />
             </div>
           </div>
@@ -616,7 +611,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
         </main>
       </div>
       <Toaster position="bottom-right" />
-    </Gates>
+    </>
   );
 };
 

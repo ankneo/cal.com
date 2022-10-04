@@ -33,6 +33,7 @@ export async function getBusyTimes(params: {
         status: {
           in: [BookingStatus.ACCEPTED],
         },
+        showBusy: true,
       },
       select: {
         id: true,
@@ -49,9 +50,9 @@ export async function getBusyTimes(params: {
         source: `eventType-${eventTypeId}-booking-${id}`,
       }))
     );
-  logger.silly(`Busy Time from Cal Bookings ${JSON.stringify(busyTimes)}`);
+  // logger.silly(`Busy Time from Cal Bookings ${JSON.stringify(busyTimes)}`);
   const endPrismaBookingGet = performance.now();
-  logger.debug(`prisma booking get took ${endPrismaBookingGet - startPrismaBookingGet}ms`);
+  // logger.debug(`prisma booking get took ${endPrismaBookingGet - startPrismaBookingGet}ms`);
   if (credentials?.length > 0) {
     const calendarBusyTimes = await getBusyCalendarTimes(credentials, startTime, endTime, selectedCalendars);
 

@@ -176,7 +176,8 @@ export default class EventManager {
     event: CalendarEvent,
     rescheduleUid: string,
     newBookingId?: number,
-    rescheduleReason?: string
+    rescheduleReason?: string,
+    organizerRescheduled?: boolean | false
   ): Promise<CreateUpdateResult> {
     const evt = processLocation(event);
 
@@ -238,7 +239,7 @@ export default class EventManager {
     }
 
     // Update all calendar events.
-    results.push(...(await this.updateAllCalendarEvents(evt, booking)));
+    results.push(...(await this.updateAllCalendarEvents(evt, booking, organizerRescheduled)));
 
     const bookingPayment = booking?.payment;
 
@@ -397,7 +398,8 @@ export default class EventManager {
    */
   private updateAllCalendarEvents(
     event: CalendarEvent,
-    booking: PartialBooking
+    booking: PartialBooking,
+    organizerRescheduled?: boolean | false
   ): Promise<Array<EventResult<NewCalendarEventType>>> {
     let calendarReference: PartialReference | undefined = undefined,
       credential;
@@ -415,13 +417,17 @@ export default class EventManager {
         credential = this.calendarCredentials.filter(
           (credential) => credential.id === calendarReference?.credentialId
         )[0];
-        result.push(updateEvent(credential, event, bookingRefUid, bookingExternalCalendarId));
+        result.push(
+          updateEvent(credential, event, bookingRefUid, bookingExternalCalendarId, organizerRescheduled)
+        );
       } else {
         const credentials = this.calendarCredentials.filter(
           (credential) => credential.type === calendarReference?.type
         );
         for (const credential of credentials) {
-          result.push(updateEvent(credential, event, bookingRefUid, bookingExternalCalendarId));
+          result.push(
+            updateEvent(credential, event, bookingRefUid, bookingExternalCalendarId, organizerRescheduled)
+          );
         }
       }
 

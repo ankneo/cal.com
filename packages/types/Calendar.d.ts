@@ -134,6 +134,7 @@ export interface CalendarEvent {
   recurrence?: string;
   recurringEvent?: RecurringEvent | null;
   eventTypeId?: number | null;
+  showBusy?: boolean | true;
 }
 
 export interface EntryPoint {
@@ -165,7 +166,8 @@ export interface Calendar {
   updateEvent(
     uid: string,
     event: CalendarEvent,
-    externalCalendarId?: string | null
+    externalCalendarId?: string | null,
+    organizerRescheduled?: boolean | false
   ): Promise<NewCalendarEventType | NewCalendarEventType[]>;
 
   deleteEvent(uid: string, event: CalendarEvent, externalCalendarId?: string | null): Promise<unknown>;

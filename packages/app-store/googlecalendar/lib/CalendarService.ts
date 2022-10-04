@@ -88,6 +88,7 @@ export default class GoogleCalendarService implements Calendar {
         reminders: {
           useDefault: true,
         },
+        transparency: calEventRaw.showBusy ? "opaque" : "transparent",
       };
 
       if (calEventRaw.location) {
@@ -109,6 +110,7 @@ export default class GoogleCalendarService implements Calendar {
           calendarId: selectedCalendar,
           requestBody: payload,
           conferenceDataVersion: 1,
+          sendUpdates: "all",
         },
         function (error, event) {
           if (error || !event?.data) {
@@ -146,7 +148,12 @@ export default class GoogleCalendarService implements Calendar {
     });
   }
 
-  async updateEvent(uid: string, event: CalendarEvent, externalCalendarId: string): Promise<any> {
+  async updateEvent(
+    uid: string,
+    event: CalendarEvent,
+    externalCalendarId: string,
+    organizerRescheduled: boolean
+  ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const myGoogleAuth = await this.auth.getToken();
       const payload: calendar_v3.Schema$Event = {
@@ -160,10 +167,21 @@ export default class GoogleCalendarService implements Calendar {
           dateTime: event.endTime,
           timeZone: event.organizer.timeZone,
         },
-        attendees: [{ ...event.organizer, organizer: true, responseStatus: "accepted" }, ...event.attendees],
+        attendees: [
+          {
+            ...event.organizer,
+            organizer: true,
+            responseStatus: "accepted",
+          },
+          ...event.attendees.map((attendee) => ({
+            ...attendee,
+            responseStatus: organizerRescheduled ? "needsAction" : "accepted",
+          })),
+        ],
         reminders: {
           useDefault: true,
         },
+        transparency: event.showBusy ? "opaque" : "transparent",
       };
 
       if (event.location) {

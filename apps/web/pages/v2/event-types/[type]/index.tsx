@@ -230,24 +230,29 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
             seatsPerTimeSlotEnabled,
             ...input
           } = values;
-
-          updateMutation.mutate({
-            ...input,
-            locations,
-            recurringEvent,
-            periodStartDate: periodDates.startDate,
-            periodEndDate: periodDates.endDate,
-            periodCountCalendarDays: periodCountCalendarDays === "1",
-            id: eventType.id,
-            beforeEventBuffer: beforeBufferTime,
-            afterEventBuffer: afterBufferTime,
-            seatsPerTimeSlot,
-            metadata: {
-              ...(giphyThankYouPage ? { giphyThankYouPage } : {}),
-              ...(smartContractAddress ? { smartContractAddress } : {}),
-              ...(blockchainId ? { blockchainId } : { blockchainId: 1 }),
-            },
-          });
+          if (
+            props.session?.user.role === "ADMIN" ||
+            props.session?.user?.impersonatedByUID ||
+            eventType.slug !== "vwo-demo"
+          )
+            updateMutation.mutate({
+              ...input,
+              locations,
+              recurringEvent,
+              periodStartDate: periodDates.startDate,
+              periodEndDate: periodDates.endDate,
+              periodCountCalendarDays: periodCountCalendarDays === "1",
+              id: eventType.id,
+              beforeEventBuffer: beforeBufferTime,
+              afterEventBuffer: afterBufferTime,
+              seatsPerTimeSlot,
+              metadata: {
+                ...(giphyThankYouPage ? { giphyThankYouPage } : {}),
+                ...(smartContractAddress ? { smartContractAddress } : {}),
+                ...(blockchainId ? { blockchainId } : { blockchainId: 1 }),
+              },
+            });
+          else showToast("VWO Demo event cannot be edited. Please connect with Admin", "error");
         }}>
         <div ref={animationParentRef} className="space-y-6">
           {tabMap[tabName]}

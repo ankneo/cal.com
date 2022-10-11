@@ -539,7 +539,7 @@ const EventTypesPage = () => {
   return (
     <div>
       <Head>
-        <title>Home | Cal.com</title>
+        <title>Home | VWO.com</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Shell

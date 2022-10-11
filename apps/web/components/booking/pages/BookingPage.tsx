@@ -413,7 +413,7 @@ const BookingPage = ({
                 eventTypeTitle: eventType.title,
                 profileName: profile.name,
               })}{" "}
-          | Cal.com
+          | VWO.com
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>

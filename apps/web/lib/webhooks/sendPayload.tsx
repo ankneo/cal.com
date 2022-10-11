@@ -3,6 +3,7 @@ import { createHmac } from "crypto";
 import { compile } from "handlebars";
 
 import { getHumanReadableLocationValue } from "@calcom/app-store/locations";
+import dayjs from "@calcom/dayjs";
 import type { CalendarEvent } from "@calcom/types/Calendar";
 
 type ContentType = "application/json" | "application/x-www-form-urlencoded";
@@ -77,6 +78,9 @@ const sendPayload = async (
       rescheduleUid?: string;
       bookingId?: number;
       status?: string;
+      triggerEvent?: string;
+      adjustedStartTime?: string;
+      adjustedEndTime?: string;
     }
 ) => {
   const { appId, payloadTemplate: template } = webhook;
@@ -85,6 +89,9 @@ const sendPayload = async (
     !template || jsonParse(template) ? "application/json" : "application/x-www-form-urlencoded";
 
   data.description = data.description || data.additionalNotes;
+  data.triggerEvent = triggerEvent;
+  data.adjustedStartTime = dayjs(data.startTime).tz(data.organizer.timeZone).format("lll");
+  data.adjustedEndTime = dayjs(data.endTime).tz(data.organizer.timeZone).format("lll");
 
   let body;
 

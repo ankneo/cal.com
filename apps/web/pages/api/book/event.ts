@@ -874,6 +874,7 @@ async function handler(req: NextApiRequest) {
       metadata: reqBody.metadata,
       eventTypeId,
       status: eventType.requiresConfirmation ? "PENDING" : "ACCEPTED",
+      location: results[0].createdEvent?.hangoutLink,
     }).catch((e) => {
       console.error(`Error executing webhook for event: ${eventTrigger}, URL: ${sub.subscriberUrl}`, e);
     })

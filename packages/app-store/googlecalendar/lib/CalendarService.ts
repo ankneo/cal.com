@@ -97,6 +97,7 @@ export default class GoogleCalendarService implements Calendar {
 
       if (calEventRaw.conferenceData && calEventRaw.location === "integrations:google:meet") {
         payload["conferenceData"] = calEventRaw.conferenceData;
+        payload["location"] = "Google Meet";
       }
       const calendar = google.calendar({
         version: "v3",
@@ -190,6 +191,7 @@ export default class GoogleCalendarService implements Calendar {
 
       if (event.conferenceData && event.location === "integrations:google:meet") {
         payload["conferenceData"] = event.conferenceData;
+        payload["location"] = "Google Meet";
       }
 
       const calendar = google.calendar({

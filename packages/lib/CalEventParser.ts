@@ -97,6 +97,9 @@ export const getProviderName = (calEvent: CalendarEvent): string => {
     if (location === "daily") {
       location = "Cal Video";
     }
+    if (location === "google") {
+      location = "Google Meet";
+    }
     return location[0].toUpperCase() + location.slice(1);
   }
   // If location its a url, probably we should be validating it with a custom library
@@ -121,12 +124,14 @@ export const getCancelLink = (calEvent: CalendarEvent): string => {
   return WEBAPP_URL + "/cancel/" + getUid(calEvent);
 };
 
+export const getRescheduleLink = (calEvent: CalendarEvent): string => {
+  return WEBAPP_URL + "/reschedule/" + getUid(calEvent);
+};
+
 export const getRichDescription = (calEvent: CalendarEvent /*, attendee?: Person*/) => {
   return `
 ${getCancellationReason(calEvent)}
 ${getWhat(calEvent)}
-${getWhen(calEvent)}
-${getWho(calEvent)}
 ${calEvent.organizer.language.translate("where")}:
 ${getLocation(calEvent)}
 ${getDescription(calEvent)}

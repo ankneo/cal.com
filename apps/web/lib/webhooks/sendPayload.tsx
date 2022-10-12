@@ -89,7 +89,7 @@ const sendPayload = async (
     !template || jsonParse(template) ? "application/json" : "application/x-www-form-urlencoded";
 
   data.description = data.description || data.additionalNotes;
-  data.triggerEvent = triggerEvent;
+  data.triggerEvent = data.organizer.language.translate(triggerEvent.toLowerCase());
   data.adjustedStartTime = dayjs(data.startTime).tz(data.organizer.timeZone).format("lll");
   data.adjustedEndTime = dayjs(data.endTime).tz(data.organizer.timeZone).format("lll");
 

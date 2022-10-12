@@ -709,6 +709,8 @@ async function handler(req: NextApiRequest) {
   const credentials = await refreshCredentials(organizerUser.credentials);
   const eventManager = new EventManager({ ...organizerUser, credentials });
 
+  let hangoutLink: string | undefined;
+
   if (originalRescheduledBooking?.uid) {
     const userReschedulingIsOwner = currentUser
       ? originalRescheduledBooking?.user?.id === currentUser.id
@@ -743,6 +745,7 @@ async function handler(req: NextApiRequest) {
           ? results[0].updatedEvent
           : [results[0].updatedEvent];
         if (updatedEvent) {
+          hangoutLink = updatedEvent.hangoutLink;
           metadata.hangoutLink = updatedEvent.hangoutLink;
           metadata.conferenceData = updatedEvent.conferenceData;
           metadata.entryPoints = updatedEvent.entryPoints;
@@ -782,6 +785,7 @@ async function handler(req: NextApiRequest) {
 
       if (results.length) {
         // TODO: Handle created event metadata more elegantly
+        hangoutLink = results[0].createdEvent?.hangoutLink;
         metadata.hangoutLink = results[0].createdEvent?.hangoutLink;
         metadata.conferenceData = results[0].createdEvent?.conferenceData;
         metadata.entryPoints = results[0].createdEvent?.entryPoints;
@@ -874,7 +878,7 @@ async function handler(req: NextApiRequest) {
       metadata: reqBody.metadata,
       eventTypeId,
       status: eventType.requiresConfirmation ? "PENDING" : "ACCEPTED",
-      location: results[0].createdEvent?.hangoutLink,
+      location: hangoutLink,
     }).catch((e) => {
       console.error(`Error executing webhook for event: ${eventTrigger}, URL: ${sub.subscriberUrl}`, e);
     })

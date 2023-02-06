@@ -97,7 +97,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
           return;
         }
         if (data.originator === "VWO") {
-          bookMeeting(data.slot);
+          bookMeeting(data.slot, data.email, data.name);
         }
       });
 
@@ -105,11 +105,18 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
     // @ts-ignore
     window.eventAttached = true;
 
-    const bookMeeting = (slot: {
-      time: string | number | dayjs.Dayjs | Date | null | undefined;
-      bookingUid: string;
-    }) => {
-      if (router.query.email !== "null" && router.query.name !== "null") {
+    const bookMeeting = (
+      slot: {
+        time: string | number | dayjs.Dayjs | Date | null | undefined;
+        bookingUid: string;
+      },
+      email: string,
+      name: string
+    ) => {
+      if (
+        (router.query.email !== "null" || email !== null) &&
+        (router.query.name !== "null" || name !== null)
+      ) {
         mutation.mutate({
           start: dayjs(slot.time).format(),
           end: dayjs(slot.time).add(eventType.length, "minute").format(),
@@ -123,8 +130,8 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
           metadata: {},
           hasHashedBookingLink: false,
           hashedLink: "",
-          email: router.query.email as string,
-          name: router.query.name as string,
+          email: (email as string) || (router.query.email as string),
+          name: (name as string) || (router.query.name as string),
           noEmail: true,
           customInputs: [],
           location: getEventLocationValue(locations, {

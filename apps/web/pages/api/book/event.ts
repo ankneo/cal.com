@@ -684,7 +684,11 @@ async function handler(req: NextApiRequest) {
   let referencesToCreate: PartialReference[] = [];
 
   type Booking = Prisma.PromiseReturnType<typeof createBooking>;
-  let booking: Booking | null = null;
+  let booking:
+    | (Booking & {
+        hangoutLink?: string;
+      })
+    | null = null;
   try {
     booking = await createBooking();
     // Sync Services
@@ -922,6 +926,7 @@ async function handler(req: NextApiRequest) {
   );
   // booking successful
   req.statusCode = 201;
+  booking.hangoutLink = hangoutLink;
   return booking;
 }
 

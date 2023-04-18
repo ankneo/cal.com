@@ -73,6 +73,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
           eventName: profile.eventName || "",
           bookingId: id,
           isSuccessBookingPage: true,
+          hangoutLink: responseData.hangoutLink,
         });
       }
       return true;

@@ -34,4 +34,5 @@ export type BookingCreateBody = {
 export type BookingResponse = Booking & {
   paymentUid?: string;
   attendees: Attendee[];
+  hangoutLink?: string;
 };

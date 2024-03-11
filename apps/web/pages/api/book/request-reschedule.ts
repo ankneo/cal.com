@@ -248,7 +248,7 @@ const handler = async (
       const eventTrigger: WebhookTriggerEvents = "BOOKING_CANCELLED";
       // Send Webhook call if hooked to BOOKING.CANCELLED
       const subscriberOptions = {
-        userId: bookingToReschedule.userId,
+        userId: 1, //bookingToReschedule.userId,
         eventTypeId: (bookingToReschedule.eventTypeId as number) || 0,
         triggerEvent: eventTrigger,
       };

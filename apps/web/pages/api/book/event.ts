@@ -834,13 +834,13 @@ async function handler(req: NextApiRequest) {
     ? WebhookTriggerEvents.BOOKING_RESCHEDULED
     : WebhookTriggerEvents.BOOKING_CREATED;
   const subscriberOptions = {
-    userId: organizerUser.id,
+    userId: 1, //organizerUser.id,
     eventTypeId,
     triggerEvent: eventTrigger,
   };
 
   const subscriberOptionsMeetingEnded = {
-    userId: organizerUser.id,
+    userId: 1, //organizerUser.id,
     eventTypeId,
     triggerEvent: WebhookTriggerEvents.MEETING_ENDED,
   };

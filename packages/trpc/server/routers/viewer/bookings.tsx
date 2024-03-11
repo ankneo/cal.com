@@ -480,7 +480,7 @@ export const bookingsRouter = createProtectedRouter()
 
         // schedule job for zapier trigger 'when meeting ends'
         const subscriberOptionsMeetingEnded = {
-          userId: booking.userId || 0,
+          userId: 1, //booking.userId || 0,
           eventTypeId: booking.eventTypeId || 0,
           triggerEvent: WebhookTriggerEvents.MEETING_ENDED,
         };

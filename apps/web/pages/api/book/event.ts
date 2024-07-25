@@ -124,6 +124,16 @@ const getEventTypesFromDB = async (eventTypeId: number) => {
         select: {
           id: true,
           name: true,
+          members: {
+            select: {
+              userId: true,
+              role: true,
+            },
+            where: {
+              accepted: true,
+              role: "OWNER",
+            },
+          },
         },
       },
       title: true,
@@ -358,6 +368,28 @@ async function handler(req: NextApiRequest) {
   // @TODO: use the returned address somewhere in booking creation?
   // const address: string | undefined = await ...
   await handleEthSignature(eventType.metadata, reqBody.ethSignature);
+
+  const membershipIds = eventType.team?.id ? eventType.team.members.map((member) => member.userId) : [];
+
+  if (membershipIds.length) {
+    // Split users into team owners and other members
+    const [teamOwner, teamOtherMembers] = users.reduce<[User[], User[]]>(
+      ([owners, others], user) => {
+        if (membershipIds.includes(user.id)) {
+          owners.push(user);
+        } else {
+          others.push(user);
+        }
+        return [owners, others];
+      },
+      [[], []]
+    );
+
+    // Reorder users
+    users = [...teamOwner, ...teamOtherMembers];
+  }
+
+  // log.debug("RearrangedUsers", users);
 
   const [organizerUser] = users;
   const tOrganizer = await getTranslation(organizerUser.locale ?? "en", "common");

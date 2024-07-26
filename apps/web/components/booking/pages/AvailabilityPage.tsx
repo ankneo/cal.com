@@ -342,13 +342,13 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
   // get dynamic user list here
   const userList = eventType.users ? eventType.users.map((user) => user.username).filter(notEmpty) : [];
   // Recurring event sidebar requires more space
-  const maxWidth = isAvailableTimesVisible
-    ? recurringEventCount
-      ? "max-w-4xl"
-      : "max-w-3xl"
-    : recurringEventCount
-    ? "max-w-4xl"
-    : "max-w-3xl";
+  const maxWidth = (() => {
+    if (isEmbed) {
+      return recurringEventCount ? "max-w-4xl" : "max-w-3xl";
+    } else {
+      return recurringEventCount ? "max-w-6xl" : "max-w-5xl";
+    }
+  })();
   const timezoneDropdown = useMemo(
     () => (
       <TimezoneDropdown
@@ -377,6 +377,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
         }}
       />
       <CustomBranding lightVal={profile.brandColor} darkVal={profile.darkBrandColor} />
+      {!isEmbed && <PoweredByCal />}
       <div>
         <main
           className={classNames(
@@ -395,7 +396,7 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
               isEmbed ? "mx-auto" : maxWidth
             )}>
             {/* mobile: details */}
-            <div className="hidden px-4 pt-4 sm:p-8 md:hidden">
+            <div className={(!isEmbed ? "block " : "hidden ") + "px-4 pt-4 sm:p-8 md:hidden"}>
               <div>
                 <UserAvatars
                   profile={profile}
@@ -496,8 +497,9 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
             <div className="overflow-hidden sm:flex">
               <div
                 className={
-                  "sm:dark:border-darkgray-200 hidden overflow-hidden border-gray-200 p-5 sm:border-r  md:flex-col " +
-                  (isAvailableTimesVisible ? "sm:w-1/2" : recurringEventCount ? "sm:w-1/2" : "sm:w-1/2")
+                  "sm:dark:border-darkgray-200 hidden overflow-hidden border-gray-200 p-5 sm:border-r " +
+                  (!isEmbed ? "md:flex md:flex-col " : "md:flex-col ") +
+                  (isAvailableTimesVisible ? " sm:w-1/2 " : recurringEventCount ? " sm:w-1/2 " : " sm:w-1/2 ")
                 }>
                 <UserAvatars
                   profile={profile}
@@ -608,7 +610,6 @@ const AvailabilityPage = ({ profile, eventType }: Props) => {
               />
             </div>
           </div>
-          {(!eventType.users[0] || !isBrandingHidden(eventType.users[0])) && !isEmbed && <PoweredByCal />}
         </main>
       </div>
       <Toaster position="bottom-right" />

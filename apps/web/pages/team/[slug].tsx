@@ -24,6 +24,7 @@ import { inferSSRProps } from "@lib/types/inferSSRProps";
 import { HeadSeo } from "@components/seo/head-seo";
 import Team from "@components/team/screens/Team";
 import AvatarGroup from "@components/ui/AvatarGroup";
+import PoweredByCal from "@components/ui/PoweredByCal";
 
 export type TeamPageProps = inferSSRProps<typeof getServerSideProps>;
 function TeamPage({ team }: TeamPageProps) {
@@ -122,6 +123,7 @@ function TeamPage({ team }: TeamPageProps) {
             </aside>
           </div>
         )}
+        <PoweredByCal />
       </div>
     </div>
   );

@@ -28,9 +28,9 @@ export default function Logo({
       ) : (
         <strong>
           {icon ? (
-            <img className="mx-auto w-9" alt="Cal" title="Cal" src={LOGO_ICON} />
+            <img className="w-22 mx-auto" alt="VWO" title="VWO" src={LOGO_ICON} />
           ) : (
-            <img className={small ? "h-4 w-auto" : "h-5 w-auto"} alt="Cal" title="Cal" src={LOGO} />
+            <img className={small ? "h-22 w-auto" : "h-24 w-auto"} alt="VWO" title="VWO" src={LOGO} />
           )}
         </strong>
       )}

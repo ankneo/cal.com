@@ -138,6 +138,7 @@ const SlotPicker = ({
       setBrowsingDate(dayjs.utc(month).set("date", 1).set("hour", 0).set("minute", 0).set("second", 0));
       if (date) {
         setSelectedDate(dayjs.utc(date));
+        if (!month) setMonth(dayjs.utc(date).format("YYYY-MM"));
       }
     } else {
       // Set the start of the month without shifting time like startOf() may do.
@@ -147,6 +148,7 @@ const SlotPicker = ({
       if (date) {
         // It's important to set the date immediately to the timeZone, dayjs(date) will convert to browsertime.
         setSelectedDate(dayjs.tz(date, timeZone));
+        if (!month) setMonth(dayjs.tz(date, timeZone).format("YYYY-MM"));
       }
     }
   }, [router.isReady, month, date, timeZone]);
@@ -165,7 +167,7 @@ const SlotPicker = ({
     eventTypeSlug: eventType.slug,
     usernameList: users,
     startTime: browsingDate?.startOf("month"),
-    endTime: browsingDate?.endOf("month"),
+    endTime: browsingDate?.add(1, "month").endOf("month"),
     timeZone,
   });
 
@@ -173,10 +175,13 @@ const SlotPicker = ({
 
   const availableDate = () => {
     const usableDates = Object.keys(slots).filter((k) => slots[k].length > 0);
-    usableDates.length > 0 &&
-      setSelectedDate(
-        timeZone === "Etc/GMT" ? dayjs.utc(usableDates[0]) : dayjs.tz(usableDates[0], timeZone)
-      );
+    if (usableDates.length > 0) {
+      const da = timeZone === "Etc/GMT" ? dayjs.utc(usableDates[0]) : dayjs.tz(usableDates[0], timeZone);
+      if (browsingDate && browsingDate.month() < da.month()) {
+        setBrowsingDate(da);
+        setSelectedDate(da);
+      }
+    }
     return undefined;
   };
 

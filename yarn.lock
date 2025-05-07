@@ -2519,7 +2519,7 @@ __metadata:
     "@axiomhq/winston": ^1.2.0
     "@calcom/platform-constants": "*"
     "@calcom/platform-enums": "*"
-    "@calcom/platform-libraries": "npm:@calcom/platform-libraries@0.0.194"
+    "@calcom/platform-libraries": "npm:@calcom/platform-libraries@0.0.196"
     "@calcom/platform-libraries-0.0.2": "npm:@calcom/platform-libraries@0.0.2"
     "@calcom/platform-types": "*"
     "@calcom/platform-utils": "*"
@@ -3578,13 +3578,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@calcom/platform-libraries@npm:@calcom/platform-libraries@0.0.194":
-  version: 0.0.194
-  resolution: "@calcom/platform-libraries@npm:0.0.194"
+"@calcom/platform-libraries@npm:@calcom/platform-libraries@0.0.196":
+  version: 0.0.196
+  resolution: "@calcom/platform-libraries@npm:0.0.196"
   dependencies:
     "@calcom/features": "*"
     "@calcom/lib": "*"
-  checksum: 85d15cdce86ec2c663da393cc35fddbe7b657c0d61ccf6c08dccd510fd64530c82ff9b78cca325f77400d233d8cb5fbf4073f63e1ad4408bdc0a3f548ee91462
+  checksum: ac58f9d316f67e60e6fb2300a0aee998f62baad80499e9933a13b2081b4bc4448c14c86ffe93135dfec5f9c46b0812370e09b934e681200ab8278e1770cd8760
   languageName: node
   linkType: hard
 
@@ -22143,6 +22143,7 @@ __metadata:
     vitest: ^2.1.1
     vitest-fetch-mock: ^0.3.0
     vitest-mock-extended: ^2.0.2
+    vwo-smartcode-nextjs: ^1.3.0
   languageName: unknown
   linkType: soft
 
@@ -47549,6 +47550,16 @@ __metadata:
   bin:
     vue-tsc: bin/vue-tsc.js
   checksum: 98c2986df01000a3245b5f08b9db35d0ead4f46fb12f4fe771257b4aa61aa4c26dda359aaa0e6c484a6240563d5188aaa6ed312dd37cc2315922d5e079260001
+  languageName: node
+  linkType: hard
+
+"vwo-smartcode-nextjs@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "vwo-smartcode-nextjs@npm:1.3.0"
+  peerDependencies:
+    next: ">=9.0.0"
+    react: ">=16.8.0"
+  checksum: 3094d75c11763c5ded15db1799ecf8d19c99fead1bc229febc6028a0fe4b39bbe127b61816e94acd14689985955909fb1530f61629934d48eeaa8f5feb12607a
   languageName: node
   linkType: hard
 

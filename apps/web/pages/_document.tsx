@@ -3,6 +3,7 @@ import { dir } from "i18next";
 import type { NextPageContext } from "next";
 import type { DocumentContext, DocumentProps } from "next/document";
 import Document, { Head, Html, Main, NextScript } from "next/document";
+import { VWOScript } from "vwo-smartcode-nextjs";
 import { z } from "zod";
 
 import { IS_PRODUCTION } from "@calcom/lib/constants";
@@ -62,6 +63,7 @@ class MyDocument extends Document<Props> {
         lang={newLocale}
         dir={newDir}
         style={embedColorScheme ? { colorScheme: embedColorScheme as string } : undefined}>
+        <VWOScript scriptAttributes={{ nonce }} accountId="193640" />
         <Head nonce={nonce}>
           <script
             nonce={nonce}

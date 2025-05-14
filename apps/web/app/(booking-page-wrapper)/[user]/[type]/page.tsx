@@ -4,6 +4,7 @@ import { generateMeetingMetadata } from "app/_utils";
 import { headers, cookies } from "next/headers";
 
 import { getOrgFullOrigin } from "@calcom/features/ee/organizations/lib/orgDomains";
+import { trackEvent } from "@calcom/lib/analytics";
 
 import { buildLegacyCtx, decodeParams } from "@lib/buildLegacyCtx";
 
@@ -54,6 +55,33 @@ const getData = withAppDirSsr<LegacyPageProps>(getServerSideProps);
 const ServerPage = async ({ params, searchParams }: PageProps) => {
   const legacyCtx = buildLegacyCtx(await headers(), await cookies(), await params, await searchParams);
   const props = await getData(legacyCtx);
+
+  // Get the URL path parameters for user and type
+  const { user, type } = await params;
+
+  // Determine does the user have a cookie that says they've visited the booking page
+  const cookieStore = await cookies();
+  const queryParams = await searchParams;
+  const cookieName = `bookingPageVisited|${user}|${type}|${queryParams?.t_source}`;
+  const cookieValue = `${queryParams?.t_account_id}|${queryParams?.t_user_id}`;
+  const isBookingPageVisited = cookieStore.get(cookieName);
+
+  // Check if the user has not visited the booking page previously in 1 day and if they have, track the event
+  if (
+    isBookingPageVisited?.value !== cookieValue &&
+    (queryParams["t_source"] || queryParams["t_account_id"] || queryParams["t_user_id"])
+  ) {
+    const eventData = {
+      source: queryParams["t_source"],
+      accountId: queryParams["t_account_id"],
+      userId: queryParams["t_user_id"],
+    };
+    trackEvent("SETUP_MEETING_ATTEMPTED", eventData);
+
+    // Set the cookie for the booking page
+    props.cookieName = cookieName;
+    props.cookieValue = cookieValue;
+  }
 
   return <LegacyPage {...props} />;
 };

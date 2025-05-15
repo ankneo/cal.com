@@ -1,7 +1,9 @@
 "use client";
 
 import type { EmbedProps } from "app/WithEmbedSSR";
+import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 import { BookerWebWrapper as Booker } from "@calcom/atoms/booker";
 import { getBookerWrapperClasses } from "@calcom/features/bookings/Booker/utils/getBookerWrapperClasses";
@@ -12,7 +14,11 @@ import BookingPageErrorBoundary from "@components/error/BookingPageErrorBoundary
 
 import type { getServerSideProps } from "@server/lib/[user]/[type]/getServerSideProps";
 
-export type PageProps = inferSSRProps<typeof getServerSideProps> & EmbedProps;
+export type PageProps = inferSSRProps<typeof getServerSideProps> &
+  EmbedProps & {
+    cookieName: string;
+    cookieValue: string;
+  };
 
 export const getMultipleDurationValue = (
   multipleDurationConfig: number[] | undefined,
@@ -24,8 +30,22 @@ export const getMultipleDurationValue = (
   return defaultValue;
 };
 
-function Type({ slug, user, isEmbed, booking, isBrandingHidden, eventData, orgBannerUrl }: PageProps) {
+function Type({
+  slug,
+  user,
+  isEmbed,
+  booking,
+  isBrandingHidden,
+  eventData,
+  orgBannerUrl,
+  cookieName,
+  cookieValue,
+}: PageProps) {
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    Cookies.set(cookieName, cookieValue, { expires: new Date(Date.now() + 20 * 1000) }); // expires in 20 seconds
+  }, []);
 
   return (
     <BookingPageErrorBoundary>

@@ -10,13 +10,13 @@ interface EventData {
   [key: string]: any;
 }
 
-export const trackEvent = async (eventName: string, eventData: EventData): Promise<void> => {
+export const trackEvent = async (eventName: string, eventData: EventData, userId?: string): Promise<void> => {
   try {
     // Prepare event data
     const analyticsData = {
       event: eventName,
       properties: eventData,
-      userId: eventData.userId || `anonymous-${Date.now()}`,
+      userId: userId || `anonymous-${Date.now()}`,
     };
 
     // Track event

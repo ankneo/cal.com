@@ -62,21 +62,29 @@ const ServerPage = async ({ params, searchParams }: PageProps) => {
   // Determine does the user have a cookie that says they've visited the booking page
   const cookieStore = await cookies();
   const queryParams = await searchParams;
-  const cookieName = `bookingPageVisited|${user}|${type}|${queryParams?.t_source}`;
-  const cookieValue = `${queryParams?.t_account_id}|${queryParams?.t_user_id}`;
+  const cookieName = `bookingPageVisited|${user}|${type}`;
+  const cookieValue = `true`;
   const isBookingPageVisited = cookieStore.get(cookieName);
 
-  // Check if the user has not visited the booking page previously in 1 day and if they have, track the event
+  // To stop track event for multiple request for the same booking page.
   if (
-    isBookingPageVisited?.value !== cookieValue &&
-    (queryParams["t_source"] || queryParams["t_account_id"] || queryParams["t_user_id"])
+    !isBookingPageVisited?.value &&
+    queryParams &&
+    Object.keys(queryParams).some(function (param) {
+      return param.startsWith("t_");
+    })
   ) {
-    const eventData = {
-      source: queryParams["t_source"],
-      accountId: queryParams["t_account_id"],
-      userId: queryParams["t_user_id"],
-    };
-    trackEvent("SETUP_MEETING_ATTEMPTED", eventData);
+    // Initialize the eventData object with proper type
+    const eventData: Record<string, any> = {};
+
+    // Iterate over the query params and convert them to camel case and add them to the eventData object
+    Object.keys(queryParams).forEach(function (param) {
+      if (param.startsWith("t_")) {
+        eventData[param] = queryParams[param];
+      }
+    });
+
+    trackEvent("SETUP_MEETING_ATTEMPTED", eventData, queryParams["t_user_id"] as string);
 
     // Set the cookie for the booking page
     props.cookieName = cookieName;

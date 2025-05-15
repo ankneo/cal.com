@@ -44,7 +44,7 @@ function Type({
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    Cookies.set(cookieName, cookieValue, { expires: 1 }); // expires in 1 days
+    Cookies.set(cookieName, cookieValue, { expires: new Date(Date.now() + 20 * 1000) }); // expires in 20 seconds
   }, []);
 
   return (

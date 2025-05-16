@@ -65,7 +65,7 @@ export default function Type(props: AvailabilityPageProps) {
     };
 
     trackPageView();
-  }, [router.isReady, router.query]);
+  }, [router.isReady]);
 
   return props.away ? (
     <div className="h-screen dark:bg-neutral-900">

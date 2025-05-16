@@ -1,5 +1,7 @@
 import { UserPlan } from "@prisma/client";
 import { GetStaticPaths, GetStaticPropsContext } from "next";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { JSONObject } from "superjson/dist/types";
 import { z } from "zod";
 
@@ -18,6 +20,52 @@ export type AvailabilityPageProps = inferSSRProps<typeof getStaticProps>;
 
 export default function Type(props: AvailabilityPageProps) {
   const { t } = useLocale();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Only track after router is ready and we have query params
+    if (!router.isReady) return;
+
+    const trackPageView = async () => {
+      try {
+        const queryParams = router.query;
+
+        // Check if there are no query params
+        if (!queryParams) {
+          return;
+        }
+
+        // initialise event data
+        const eventData = {};
+        Object.keys(queryParams).forEach((param) => {
+          if (param.startsWith("t_")) {
+            eventData[param] = queryParams[param];
+          }
+        });
+
+        // Check if event data is empty
+        if (!Object.keys(eventData).length) {
+          return;
+        }
+
+        // Track the event
+        await fetch("/api/track", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            event: "booking_page_view",
+            eventData: eventData,
+          }),
+        });
+      } catch (error) {
+        console.error("Error tracking page view:", error);
+      }
+    };
+
+    trackPageView();
+  }, [router.isReady]);
 
   return props.away ? (
     <div className="h-screen dark:bg-neutral-900">

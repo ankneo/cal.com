@@ -72,7 +72,8 @@
     "ts-jest": "^28.0.8"
   },
   "dependencies": {
-    "turbo": "^1.4.3"
+    "turbo": "^1.4.3",
+    "@segment/analytics-node": "1.0.0"
   },
   "resolutions": {
     "@types/node": "16.9.1",

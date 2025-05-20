@@ -36,7 +36,7 @@ export default function Type(props: AvailabilityPageProps) {
         }
 
         // initialise event data
-        const eventData = {};
+        const eventData: Record<string, string | string[] | undefined> = {};
         Object.keys(queryParams).forEach((param) => {
           if (param.startsWith("t_")) {
             eventData[param] = queryParams[param];

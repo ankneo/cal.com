@@ -4,17 +4,25 @@ import { trackEvent } from "@calcom/lib/analytics";
 
 const trackingParamPrefix = "t_";
 
+type TrackingEvents = {
+  booking_page_view: "SETUP_MEETING_ATTEMPTED";
+};
+
+type EventData = {
+  [key: string]: string | string[] | undefined;
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const trackEventNames = {
+  const trackEventNames: TrackingEvents = {
     booking_page_view: "SETUP_MEETING_ATTEMPTED",
-  };
+  } as const;
 
   try {
-    const { eventData, event } = req.body;
+    const { eventData, event }: { eventData: EventData; event: keyof TrackingEvents } = req.body;
 
     // Check if the event is valid
     if (!trackEventNames[event]) {
@@ -36,7 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     // Track the event with the provided data
-    trackEvent(eventName, eventData, eventData["t_user_id"]);
+    const userId = typeof eventData["t_user_id"] === "string" ? eventData["t_user_id"] : undefined;
+    trackEvent(eventName, eventData, userId);
 
     return res.status(200).json({ success: true });
   } catch (error) {

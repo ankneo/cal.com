@@ -27,7 +27,7 @@ export const seoConfig: {
   defaultNextSeo: DefaultSeoProps;
 } = {
   headSeo: {
-    siteName: "Cal.com",
+    siteName: "VWO.com",
   },
   defaultNextSeo: {
     twitter: {

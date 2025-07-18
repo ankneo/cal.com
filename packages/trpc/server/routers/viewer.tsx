@@ -43,6 +43,7 @@ import { resizeBase64Image } from "@calcom/web/server/lib/resizeBase64Image";
 import { TRPCError } from "@trpc/server";
 
 import { createProtectedRouter, createRouter } from "../createRouter";
+import { adminAvailabilityRouter } from "./viewer/admin/availability";
 import { apiKeysRouter } from "./viewer/apiKeys";
 import { authRouter } from "./viewer/auth";
 import { availabilityRouter } from "./viewer/availability";
@@ -730,7 +731,7 @@ const loggedInViewerRouter = createProtectedRouter()
       const { variant, exclude, onlyInstalled } = input;
       const { credentials } = user;
       let apps = getApps(credentials).map(
-        ({ credentials: _, credential: _1 /* don't leak to frontend */, ...app }) => ({
+        ({ credentials: _unused, credential: _unused1 /* don't leak to frontend */, ...app }) => ({
           ...app,
           credentialIds: credentials.filter((c) => c.type === app.type).map((c) => c.id),
         })
@@ -1445,6 +1446,7 @@ export const viewerRouter = createRouter()
   .merge("bookings.", bookingsRouter)
   .merge("eventTypes.", eventTypesRouter)
   .merge("availability.", availabilityRouter)
+  .merge("admin.availability.", adminAvailabilityRouter)
   .merge("teams.", viewerTeamsRouter)
   .merge("webhook.", webhookRouter)
   .merge("apiKeys.", apiKeysRouter)

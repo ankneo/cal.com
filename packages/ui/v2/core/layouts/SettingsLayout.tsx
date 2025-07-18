@@ -78,6 +78,7 @@ const tabs: VerticalTabItemProps[] = [
       { name: "impersonation", href: "/settings/admin/impersonation" },
       { name: "apps", href: "/settings/admin/apps" },
       { name: "users", href: "/settings/admin/users" },
+      { name: "availability_dashboard", href: "/settings/admin/availability-dashboard" },
     ],
   },
 ];
@@ -101,7 +102,6 @@ const SettingsSidebarContainer = ({ className = "" }) => {
   const tabsWithPermissions = useTabs();
   const [teamMenuState, setTeamMenuState] =
     useState<{ teamId: number | undefined; teamMenuOpen: boolean }[]>();
-  const [isLoading, setIsLoading] = useState(true);
 
   const { data: teams } = trpc.useQuery(["viewer.teams.list"]);
 
@@ -110,7 +110,7 @@ const SettingsSidebarContainer = ({ className = "" }) => {
       const teamStates = teams?.map((team) => ({ teamId: team.id, teamMenuOpen: false }));
       setTeamMenuState(teamStates);
     }
-  }, [teams]);
+  }, [teams, setTeamMenuState]);
 
   return (
     <nav

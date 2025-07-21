@@ -44,14 +44,6 @@ const tabs: VerticalTabItemProps[] = [
     ],
   },
   {
-    name: "billing",
-    href: "/settings/billing",
-    icon: Icon.FiCreditCard,
-    children: [
-      { name: "Manage Billing", href: "/api/integrations/stripepayment/portal", isExternalLink: true },
-    ],
-  },
-  {
     name: "developer",
     href: "/settings/developer",
     icon: Icon.FiTerminal,

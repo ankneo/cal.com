@@ -70,3 +70,14 @@ export default collectEvents({
   cookieName: "__clnds",
   extend: extendEventData,
 });
+
+// Run middleware only where it is actually needed. Excluding the rest of the
+// `/api/*` surface (notably `/api/trpc`) avoids a Next.js 12 bug where the
+// presence of middleware stalls large POST request bodies (e.g. avatar uploads).
+export const config = {
+  matcher: [
+    "/api/auth/:path*",
+    "/api/collect-events/:path*",
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
+};

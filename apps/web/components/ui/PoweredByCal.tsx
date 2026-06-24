@@ -13,7 +13,7 @@ const PoweredByCal = () => {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               className=" mt-px inline h-28 w-auto dark:hidden"
-              src="https://vwo.com/downloads/media-kit/VWO-Logo-Color.svg"
+              src="/vwo-abt-logo-light.svg"
               alt="vwo.com Logo"
             />
           }
@@ -21,7 +21,7 @@ const PoweredByCal = () => {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               className=" mt-px hidden h-28 w-auto dark:inline"
-              src="https://vwo.com/downloads/media-kit/VWO-Logo-White.svg"
+              src="/vwo-abt-logo-dark.svg"
               alt="vwo.com Logo"
             />
           }

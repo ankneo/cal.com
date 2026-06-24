@@ -64,9 +64,11 @@ const buildSeoMeta = (pageProps: {
 };
 
 const constructImage = (name: string, description: string, username: string): string => {
+  const baseUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || process.env.NEXT_PUBLIC_WEBAPP_URL;
+  const logoUrl = encodeURIComponent(`${baseUrl}/vwo-abt-logo-light.svg`);
   return (
     encodeURIComponent("Meet **" + name + "** <br>" + description).replace(/'/g, "%27") +
-    ".png?md=1&images=https%3A%2F%2Fvwo.com%2Fdownloads%2Fmedia-kit%2FVWO-Logo-Color.svg&images=" +
+    `.png?md=1&images=${logoUrl}&images=` +
     (process.env.NEXT_PUBLIC_WEBSITE_URL || process.env.NEXT_PUBLIC_WEBAPP_URL) +
     "/" +
     username +
@@ -89,7 +91,7 @@ export const HeadSeo = (props: HeadSeoProps): JSX.Element => {
   } = props;
 
   const truncatedDescription = description.length > 24 ? description.substring(0, 23) + "..." : description;
-  const pageTitle = title + " | VWO.com";
+  const pageTitle = title + " | wingify.com";
   let seoObject = buildSeoMeta({
     title: pageTitle,
     image,

@@ -413,7 +413,7 @@ const BookingPage = ({
                 eventTypeTitle: eventType.title,
                 profileName: profile.name,
               })}{" "}
-          | VWO.com
+          | Wingify.com
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>

@@ -89,7 +89,7 @@ export const HeadSeo = (props: HeadSeoProps): JSX.Element => {
   } = props;
 
   const truncatedDescription = description.length > 24 ? description.substring(0, 23) + "..." : description;
-  const pageTitle = title + " | VWO.com";
+  const pageTitle = title + " | wingify.com";
   let seoObject = buildSeoMeta({
     title: pageTitle,
     image,

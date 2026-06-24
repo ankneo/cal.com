@@ -65,10 +65,9 @@ const buildSeoMeta = (pageProps: {
 
 const constructImage = (name: string, description: string, username: string): string => {
   const baseUrl = process.env.NEXT_PUBLIC_WEBSITE_URL || process.env.NEXT_PUBLIC_WEBAPP_URL;
-  const logoUrl = encodeURIComponent(`${baseUrl}/vwo-abt-logo-light.svg`);
   return (
     encodeURIComponent("Meet **" + name + "** <br>" + description).replace(/'/g, "%27") +
-    `.png?md=1&images=${logoUrl}&images=` +
+    `.png?md=1&images=${baseUrl}/vwo-abt-logo-light.svg&images=` +
     (process.env.NEXT_PUBLIC_WEBSITE_URL || process.env.NEXT_PUBLIC_WEBAPP_URL) +
     "/" +
     username +

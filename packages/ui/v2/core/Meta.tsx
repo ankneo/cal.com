@@ -54,7 +54,7 @@ export default function Meta({ title, description, backButton }: MetaType) {
 
   return (
     <Head>
-      <title>{title} | VWO.com</title>
+      <title>{title} | Wingify.com</title>
       <meta name="description" content={description} />
     </Head>
   );

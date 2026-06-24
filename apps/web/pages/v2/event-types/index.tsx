@@ -523,7 +523,7 @@ const EventTypesPage = () => {
   return (
     <div>
       <Head>
-        <title>Home | VWO.com</title>
+        <title>Home | Wingify.com</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Shell

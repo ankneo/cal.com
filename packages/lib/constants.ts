@@ -25,8 +25,8 @@ export const TRIAL_LIMIT_DAYS = 14;
 export const HOSTED_CAL_FEATURES = process.env.HOSTED_CAL_FEATURES || BASE_URL === "https://app.cal.com";
 /** @deprecated use `WEBAPP_URL` */
 export const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_WEBAPP_URL || `https://${process.env.VERCEL_URL}`;
-export const LOGO = "https://vwo.com/downloads/media-kit/VWO-Logo-Color.svg";
-export const LOGO_ICON = "https://vwo.com/downloads/media-kit/VWO-Logo-Color.svg";
+export const LOGO = "/vwo-abt-logo-light.svg";
+export const LOGO_ICON = "/vwo-abt-logo-dark.svg";
 export const ROADMAP = "https://cal.com/roadmap";
 export const DESKTOP_APP_LINK = "https://cal.com/download";
 export const JOIN_SLACK = "https://cal.com/slack";

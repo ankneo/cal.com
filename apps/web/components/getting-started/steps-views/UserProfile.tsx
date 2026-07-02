@@ -81,11 +81,11 @@ const UserProfile = (props: IUserProfile) => {
 
   const DEFAULT_EVENT_TYPES = [
     {
-      title: t("vwo_demo"),
-      slug: "vwo_demo",
+      title: t("wingify_demo"),
+      slug: "wingify_demo",
       length: 45,
       hidden: true,
-      eventName: "VWO Demo with {HOST}/{ATTENDEE}",
+      eventName: "Wingify Demo with {HOST}/{ATTENDEE}",
     },
   ];
 

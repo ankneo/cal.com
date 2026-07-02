@@ -233,7 +233,7 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
           if (
             props.session?.user.role === "ADMIN" ||
             props.session?.user?.impersonatedByUID ||
-            eventType.slug !== "vwo-demo"
+            eventType.slug !== "wingify-demo"
           )
             updateMutation.mutate({
               ...input,
@@ -252,7 +252,7 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                 ...(blockchainId ? { blockchainId } : { blockchainId: 1 }),
               },
             });
-          else showToast("VWO Demo event cannot be edited. Please connect with Admin", "error");
+          else showToast("Wingify Demo event cannot be edited. Please connect with Admin", "error");
         }}>
         <div ref={animationParentRef} className="space-y-6">
           {tabMap[tabName]}

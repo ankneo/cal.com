@@ -345,6 +345,19 @@ following
 1. Add extra redirect URL `<Cal.com URL>/api/auth/callback/google`
 1. Under 'OAuth concent screen', click "PUBLISH APP"
 
+This fork uses Google for public sign-in. Set `GOOGLE_LOGIN_ENABLED=true` and
+configure `GOOGLE_API_CREDENTIALS` with the Google web client's ID and secret.
+Password login, password signup/setup/recovery, email magic links, and SAML login
+are disabled on the server. Authorized impersonation remains available with its
+existing permission checks and audit logging. Missing Google configuration does
+not enable another public sign-in method.
+
+Deploy the API and login-page changes together. Existing JWT sessions are not
+revoked by removing a login provider; rotate `NEXTAUTH_SECRET` consistently across
+all instances and restart them when revoking existing access. Existing accounts
+that only have a local password require administrator-assisted Google account
+linking. Google email-domain admission rules are unchanged by this policy.
+
 ### Obtaining Microsoft Graph Client ID and Secret
 
 1. Open [Azure App Registration](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) and select New registration

@@ -23,7 +23,14 @@ export default function Error() {
   const isTokenVerificationError = error?.toLowerCase() === "verification";
   let errorMsg = <SkeletonText />;
   if (router.isReady) {
-    errorMsg = isTokenVerificationError ? t("token_invalid_expired") : t("error_during_login");
+    errorMsg =
+      error === "google-account-link-required" ? (
+        <>Contact your administrator to link your existing account to Google.</>
+      ) : isTokenVerificationError ? (
+        t("token_invalid_expired")
+      ) : (
+        t("error_during_login")
+      );
   }
 
   return (

@@ -154,7 +154,7 @@ const SlotPicker = ({
   }, [router.isReady, month, date, timeZone]);
 
   const { i18n, isLocaleReady } = useLocale();
-  const { slots: _1 } = useSlots({
+  const { slots: daySlots, isLoading: isDaySlotsLoading } = useSlots({
     eventTypeId: eventType.id,
     eventTypeSlug: eventType.slug,
     usernameList: users,
@@ -162,7 +162,7 @@ const SlotPicker = ({
     endTime: selectedDate?.endOf("day"),
     timeZone,
   });
-  const { slots: _2, isLoading } = useSlots({
+  const { slots: monthSlots, isLoading } = useSlots({
     eventTypeId: eventType.id,
     eventTypeSlug: eventType.slug,
     usernameList: users,
@@ -171,7 +171,12 @@ const SlotPicker = ({
     timeZone,
   });
 
-  const slots = useMemo(() => ({ ..._2, ..._1 }), [_1, _2]);
+  const slots = useMemo(() => ({ ...monthSlots, ...daySlots }), [daySlots, monthSlots]);
+  const selectedDayKey = selectedDate?.format("YYYY-MM-DD");
+  const selectedDaySlots = selectedDayKey ? daySlots[selectedDayKey] : undefined;
+  // Month results are computed by walking forward from the 1st, which keeps the pre-daylight-saving offset.
+  // Only the selected day's own response is safe to book, so show nothing until that response is in.
+  const daySlotsReady = !isDaySlotsLoading && selectedDaySlots !== undefined;
 
   const availableDate = () => {
     const usableDates = Object.keys(slots).filter((k) => slots[k].length > 0);
@@ -210,8 +215,8 @@ const SlotPicker = ({
 
       {selectedDate && (
         <AvailableTimes
-          isLoading={isLoading}
-          slots={slots[selectedDate.format("YYYY-MM-DD")]}
+          isLoading={!daySlotsReady}
+          slots={daySlotsReady ? selectedDaySlots : []}
           date={selectedDate}
           timeFormat={timeFormat}
           eventTypeId={eventType.id}
